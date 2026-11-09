@@ -1,0 +1,22 @@
+{
+  "app_repos": [
+    {
+      "private": true,
+      "repo": "ERP-LAB-5/ovs-dlab5-net"
+    },
+    {
+      "private": true,
+      "repo": "ERP-LAB-5/ovs-dlab5-edge"
+    }
+  ],
+  "description": "An ontology-driven data lifecycle engine: business platforms as one semantic graph, synchronised by reviewable axioms, with a cloud and an edge on the D-LAB-5 templates.",
+  "domain": "erp-lab-5",
+  "languages": [
+    "en"
+  ],
+  "ontology": null,
+  "own_domain": "",
+  "product": "OntoVibeShift",
+  "repo": "ERP-LAB-5/ovs-dlab5-shared",
+  "slug": "ovs"
+}
