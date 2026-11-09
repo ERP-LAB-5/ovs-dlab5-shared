@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: f5186b3
+_commit: a934e36
 _src_path: gh:d-lab-5/template-dlab5-shared
 app_repos: ERP-LAB-5/ovs-dlab5-net*, ERP-LAB-5/ovs-dlab5-edge*
 description: 'An ontology-driven data lifecycle engine: business platforms as one

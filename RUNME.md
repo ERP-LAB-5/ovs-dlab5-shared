@@ -39,11 +39,15 @@ The one real architecture question is **how an edge links to a deployment**
    `test.sh` were committed as plain files, and `./run.sh` failed on a fresh
    clone.
 3. Install [Copier](https://copier.readthedocs.io) 9.4 or newer
-   (`pipx install copier`), Node 22 and Python 3.11+.
+   (`pipx install copier`) and Python 3.11+. Node 22 is needed for this
+   repository's `npm run check` and diagrams (phase 6) and for ovs-dlab5-net.
 4. Start Claude Code **in this repository**, with the other two added:
    ```bash
-   cd ovs-dlab5-shared && claude --add-dir ../ovs-dlab5-net --add-dir ../ovs-dlab5-edge
+   cd ovs-dlab5-shared && ./start-claude.sh      # Windows: start-claude.cmd
    ```
+   It adds every repository in `shared.json`'s `app_repos` that is cloned
+   beside this one (`--add-dir`), names one that is not, and passes other
+   arguments on to `claude`. It needs Python 3, not Node.
    This repository's `.claude/settings.json` enables the d-lab-5 catalogue's
    plugins the job needs: `dlab5-house` (with `dlab5-repo-conformance` and
    `dlab5-security-audit`; it must be **0.3.0 or newer**), the cloud-edge
