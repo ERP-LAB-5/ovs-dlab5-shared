@@ -1,0 +1,206 @@
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix proc:    <http://ovs.dlab5.net/process#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+
+# ============================================================
+# L0 — the terms that are genuinely ours, and only those.
+#
+# ADR-0011 shrank `core:` to what has no standard: lifecycle phases, evidence
+# basis, connection config, alignment provenance. This file keeps to that. The
+# STRUCTURE of the layering is not ours and is not reinvented here —
+# `owl:imports` layers, `owl:versionIRI` versions, `skos:*Match` aligns,
+# `prov:` records which run produced a document, `dcterms:source` attributes.
+#
+# What has no standard is the vocabulary of CUSTOMIZATION: that a term in a
+# real system was added by the customer, or had its meaning changed, or was
+# switched off. No published ontology says that, because it is a fact about a
+# deployment rather than about a domain.
+#
+# Deliberately absent: a term saying "this is standard in version X". The
+# versioned L2 document already says it by containing the term, and a second
+# way to say the same thing is a second thing to keep in step. ADR-0015.
+# ============================================================
+
+<http://ovs.dlab5.net/ontology/core>
+    a owl:Ontology ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/core/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    rdfs:label "OntoVibeShift core terms"@en ,
+               "OntoVibeShift-Kernbegriffe"@de ,
+               "Termes fondamentaux d'OntoVibeShift"@fr ;
+    dcterms:description "The layer vocabulary: what a system ontology is, and what a customization is."@en .
+
+# -- the layers themselves -----------------------------------------------------
+#
+# Typed so a shape can target a document by its layer, and so "which layer is
+# this?" is answerable from the file rather than from where it happens to sit.
+
+ovs:ProcessOntology a owl:Class ;
+    rdfs:subClassOf owl:Ontology ;
+    rdfs:label "process ontology"@en , "Prozess-Ontologie"@de , "ontologie de processus"@fr ;
+    rdfs:comment "L1. A business process and the concepts its steps run on. Hand-authored, reviewed, slow. The MIDDLE of every alignment."@en .
+
+ovs:SystemOntology a owl:Class ;
+    rdfs:subClassOf owl:Ontology ;
+    rdfs:label "system ontology"@en , "System-Ontologie"@de , "ontologie de système"@fr ;
+    rdfs:comment "L2. One system at one version, as it ships. Generated from that system's own metadata, never hand-maintained."@en .
+
+ovs:CustomizationOntology a owl:Class ;
+    rdfs:subClassOf owl:Ontology ;
+    rdfs:label "customization ontology"@en , "Anpassungs-Ontologie"@de , "ontologie de personnalisation"@fr ;
+    rdfs:comment "L3. What one deployment did to its system core. Workspace data, derived as a diff against the L2 version it imports. Never a tracked file."@en .
+
+# -- systems -------------------------------------------------------------------
+#
+# Named individuals rather than a string, because a system is referenced from
+# several places and a typo in one of them should not invent a new system.
+# This list is also the ontology's statement of the generalisation the code
+# still owes: CoreAlignment is bilateral Odoo/Shopify today (ADR-0015).
+
+ovs:System a owl:Class ;
+    rdfs:label "system"@en , "System"@de , "système"@fr ;
+    rdfs:comment "A platform an implementation can live in."@en .
+
+ovs:Odoo    a ovs:System ; rdfs:label "Odoo"@en .
+ovs:Shopify a ovs:System ; rdfs:label "Shopify"@en .
+ovs:SapEcc  a ovs:System ; rdfs:label "SAP ECC"@en .
+ovs:SapS4   a ovs:System ; rdfs:label "SAP S/4HANA"@en .
+
+ovs:describesSystem a owl:ObjectProperty ;
+    rdfs:domain ovs:SystemOntology ;
+    rdfs:range ovs:System ;
+    rdfs:label "describes system"@en , "beschreibt System"@de , "décrit le système"@fr .
+
+ovs:systemVersion a owl:DatatypeProperty ;
+    rdfs:domain ovs:SystemOntology ;
+    rdfs:label "system version"@en , "Systemversion"@de , "version du système"@fr ;
+    rdfs:comment "As the vendor names it: \"17.0\", \"6.0\", \"2026-07\". Not ours to normalise."@en .
+
+# -- terms in a real system ----------------------------------------------------
+
+ovs:SystemTerm a owl:Class ;
+    rdfs:label "system term"@en , "Systembegriff"@de , "terme de système"@fr ;
+    rdfs:comment "A term naming a real element of a real system — a model, a table, a field. ADR-0011: these are the ENDS of an alignment, never its middle, so one is never matched directly to another."@en .
+
+# Lineage is NOT alignment, and conflating the two was a mistake worth naming.
+#
+# `skos:*Match` between two system terms is refused, because two independent
+# systems coupled directly is the brittleness the concept layer exists to
+# prevent. But SAP S/4's `I_Product` really does descend from ECC's `MARA`,
+# and that is the single most useful fact in an ECC-to-S/4 move. Suppressing
+# it to satisfy the alignment rule would lose information to tidiness.
+#
+# So it gets its own property. The distinction holds because lineage is within
+# one vendor's own control: a vendor renaming its own object is not two systems
+# growing a dependency on each other.
+ovs:succeeds a owl:ObjectProperty ;
+    rdfs:domain ovs:SystemTerm ;
+    rdfs:range ovs:SystemTerm ;
+    rdfs:label "succeeds"@en , "folgt auf"@de , "succède à"@fr ;
+    rdfs:comment "This term descends from that one, in the same vendor's lineage. Not an alignment: it asserts nothing about meaning and nothing crosses it. Use `skos:*Match` into the process layer for meaning."@en .
+
+# -- customization: the part with no standard ----------------------------------
+
+ovs:Customization a owl:Class ;
+    rdfs:subClassOf ovs:SystemTerm ;
+    rdfs:label "customization"@en , "Anpassung"@de , "personnalisation"@fr ;
+    rdfs:comment "Something a deployment did to its system core. A subclass of system term, so the no-direct-match rule covers customizations too."@en .
+
+# The three kinds are CLASSES, not values of a `kind` property.
+#
+# A property would need a SPARQL-based SHACL constraint to say "an alteration
+# must name what it alters", because SHACL core cannot target nodes by the
+# value of a property. As classes, each kind is an ordinary `sh:targetClass`
+# and every rule below is expressible in SHACL core. Making the constraint
+# checkable beat making the model look tidier.
+
+ovs:Extension a owl:Class ;
+    rdfs:subClassOf ovs:Customization ;
+    rdfs:label "extension"@en , "Erweiterung"@de , "extension"@fr ;
+    rdfs:comment "A term the core does not have: an Odoo x_ field, a Z-table, a metafield definition. Additive, so it hangs off the core term it was added to and carries its own match into the process layer."@en .
+
+ovs:Alteration a owl:Class ;
+    rdfs:subClassOf ovs:Customization ;
+    rdfs:label "alteration"@en , "Änderung"@de , "altération"@fr ;
+    rdfs:comment "A CORE term whose meaning or constraints changed: a field made required or computed, a BAdI, a storefront script. Nothing new exists, so it is NOT a subclass of anything — it is a SHACL shape over the core term. This is the kind that silently breaks a mapping written against stock terminology, because it looks identical to the standard term until a write is refused."@en .
+
+ovs:Suppression a owl:Class ;
+    rdfs:subClassOf ovs:Customization ;
+    rdfs:label "suppression"@en , "Unterdrückung"@de , "suppression"@fr ;
+    rdfs:comment "A core term made unused or invisible. Recorded so that \"the core has it, therefore map it\" does not produce axioms that move nothing — or worse, that move the wrong thing."@en .
+
+# `concerns` is the super-property, so "what core term does this customization
+# touch?" is one query whatever the kind. The three sub-properties keep the
+# kinds distinguishable, and a shape checks that the sub-property used agrees
+# with the declared kind.
+
+ovs:concerns a owl:ObjectProperty ;
+    rdfs:domain ovs:Customization ;
+    rdfs:range ovs:SystemTerm ;
+    rdfs:label "concerns"@en , "betrifft"@de , "concerne"@fr .
+
+ovs:extends a owl:ObjectProperty ;
+    rdfs:subPropertyOf ovs:concerns ;
+    rdfs:label "extends"@en , "erweitert"@de , "étend"@fr .
+
+ovs:alters a owl:ObjectProperty ;
+    rdfs:subPropertyOf ovs:concerns ;
+    rdfs:label "alters"@en , "ändert"@de , "altère"@fr .
+
+ovs:suppresses a owl:ObjectProperty ;
+    rdfs:subPropertyOf ovs:concerns ;
+    rdfs:label "suppresses"@en , "unterdrückt"@de , "supprime"@fr .
+
+# -- the process layer's join ---------------------------------------------------
+
+ovs:processStep a owl:ObjectProperty ;
+    rdfs:range skos:Concept ;
+    rdfs:label "process step"@en , "Prozessschritt"@de , "étape du processus"@fr ;
+    rdfs:comment "Which step of a process a concept takes part in. The step is a skos:Concept from a scheme in tbox/ovs-concepts.ttl."@en .
+
+# -- provenance of a generated layer -------------------------------------------
+#
+# prov: carries the ACTIVITY. ADR-0011 keeps confidence in `ovs:` because how
+# sure we are that two rows describe one thing is a fact about our process,
+# not about the thing — that still holds, and is a different statement from
+# this one.
+
+ovs:DiscoveryRun a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:label "discovery run"@en , "Erkundungslauf"@de , "exécution de découverte"@fr ;
+    rdfs:comment "The read that produced a system or customization ontology. ADR-0013: the snapshot is the record."@en .
+
+# -- the A-Box side ------------------------------------------------------------
+#
+# Terms an asserted individual needs, and only those. The individual's TYPE
+# comes from Schema.org and its system term; what is ours is where the row came
+# from and whether it has a twin yet.
+
+ovs:AssertedIndividual a owl:Class ;
+    rdfs:label "asserted individual"@en , "behauptetes Individuum"@de , "individu asserté"@fr ;
+    rdfs:comment "One record of one system, as read. Rebuildable: nothing here is a system of record (ADR-0005)."@en .
+
+ovs:sourceSystem a owl:ObjectProperty ;
+    rdfs:domain ovs:AssertedIndividual ;
+    rdfs:range ovs:System ;
+    rdfs:label "source system"@en , "Quellsystem"@de , "système source"@fr .
+
+ovs:sourceTerm a owl:ObjectProperty ;
+    rdfs:domain ovs:AssertedIndividual ;
+    rdfs:range ovs:SystemTerm ;
+    rdfs:label "source term"@en , "Quellbegriff"@de , "terme source"@fr ;
+    rdfs:comment "Which model or table this row came out of. A term, not a string, so a typo cannot invent a model."@en .
+
+ovs:sourceId a owl:DatatypeProperty ;
+    rdfs:domain ovs:AssertedIndividual ;
+    rdfs:label "source id"@en , "Quell-ID"@de , "identifiant source"@fr ;
+    rdfs:comment "The id the source system gave it. Escaped inside the IRI, because `-` separates a system from its id and `_` separates two systems — ADR-0011."@en .
+
+ovs:aligned a owl:DatatypeProperty ;
+    rdfs:domain ovs:AssertedIndividual ;
+    rdfs:label "aligned"@en , "zugeordnet"@de , "aligné"@fr ;
+    rdfs:comment "Whether this row has a counterpart in another system yet. FALSE is a first-class result, not a failure: a product discovered before its twin exists has no fused identity, and that is the normal state during discovery (ADR-0011)."@en .

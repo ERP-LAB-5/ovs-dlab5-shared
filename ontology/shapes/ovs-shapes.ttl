@@ -1,0 +1,97 @@
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix ovssh:   <http://ovs.dlab5.net/shapes#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix schema:  <https://schema.org/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# SHACL shapes: what an A-Box must satisfy. Validate an A-Box TOGETHER with
+# tbox/ovs.ttl and tbox/ovs-concepts.ttl, so a step can be checked against its
+# scheme. The cloud refuses an A-Box that does not conform (ADR-0007).
+#
+# This file replaces the D-LAB-5 template placeholder, which validated
+# `app:Thing` from `template.dlab5.net`. It is the one of the three that the
+# edge copies and enforces locally, so an edge refuses the same A-Box the
+# cloud would — scripts/sync-ontology.sh in ovs-dlab5-edge.
+#
+# The LAYER rules are not here; they are in ovs-layers.ttl and apply to
+# ontology documents rather than to assertions.
+# ============================================================
+
+# -- an asserted individual ----------------------------------------------------
+
+ovssh:AssertedIndividualShape a sh:NodeShape ;
+    sh:targetClass ovs:AssertedIndividual ;
+
+    sh:property [
+        sh:path ovs:sourceSystem ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:class ovs:System ;
+        sh:message "An assertion says which system it was read from. One row, one system: a fused twin is projected, not stored (ADR-0011)."@en ;
+    ] ;
+
+    sh:property [
+        sh:path ovs:sourceTerm ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "An assertion names the model or table it came out of, as a term rather than a string."@en ;
+    ] ;
+
+    sh:property [
+        sh:path ovs:sourceId ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message "An assertion carries the id its source gave it, or it cannot be re-derived — and the A-Box is defined by being re-derivable."@en ;
+    ] ;
+
+    # Locale is part of IDENTITY, not an attribute of it (ADR-0007). A
+    # trilingual catalogue asserts one product three times with genuinely
+    # different literals. At most one value here, because two would mean one
+    # node claiming to be two identities.
+    #
+    # ABSENT means language-independent. ADR-0011 omits `*` rather than
+    # asserting it, so the shape must not require this property.
+    sh:property [
+        sh:path schema:inLanguage ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "At most one locale per assertion: locale is part of identity, so two locales are two individuals. Omit it entirely for a language-independent fact."@en ;
+    ] ;
+
+    sh:property [
+        sh:path ovs:aligned ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean ;
+        sh:message "ovs:aligned is a boolean. False is a legitimate answer — a half twin is a result, not an error."@en ;
+    ] ;
+
+    # settings.SINGLE_VALUED in the edge names schema:name as single-valued:
+    # two different values from two sides are a CONFLICT a person resolves,
+    # not both kept.
+    sh:property [
+        sh:path schema:name ;
+        sh:maxCount 1 ;
+        sh:message "A name is single-valued. Two values from two systems is a conflict for a person to resolve, not something to merge silently."@en ;
+    ] .
+
+# -- a process step cited by anything must be a step in a scheme ---------------
+#
+# Validating the A-Box together with tbox/ovs-concepts.ttl is what makes this
+# checkable: a citation of a step that no scheme declares is a typo that would
+# otherwise sit in the graph looking like data.
+
+ovssh:InAScheme a sh:NodeShape ;
+    sh:property [
+        sh:path skos:inScheme ;
+        sh:minCount 1 ;
+        sh:message "A process step belongs to a concept scheme."@en ;
+    ] .
+
+ovssh:ProcessStepCitationShape a sh:NodeShape ;
+    sh:targetSubjectsOf ovs:processStep ;
+    sh:property [
+        sh:path ovs:processStep ;
+        sh:node ovssh:InAScheme ;
+        sh:message "A cited process step must be a concept in a declared scheme. Validate together with tbox/ovs-concepts.ttl."@en ;
+    ] .

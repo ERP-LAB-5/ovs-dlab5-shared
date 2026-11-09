@@ -1,0 +1,125 @@
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix proc:    <http://ovs.dlab5.net/process#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema:  <https://schema.org/> .
+@prefix gr:      <http://purl.org/goodrelations/v1#> .
+
+# ============================================================
+# L1 — a business process, as SKOS. New steps are DATA, not code.
+#
+# This is the MIDDLE of every alignment. A system term never matches another
+# system term; both reach a concept here (ADR-0011), and a concept says which
+# step of which process it takes part in.
+#
+# WHY A SKOS SCHEME OF OUR OWN, rather than adopting a published framework:
+# APQC's Process Classification Framework is licensed, and REA/ValueFlows is a
+# genuine fit that brings a whole economic-event model with it for the sake of
+# one retail process. A small scheme ALIGNED to schema.org costs less and says
+# the same thing. Replacing it later is an alignment job, not a rewrite, which
+# is the point of keeping the steps separate from the things.
+#
+# WHAT IS NOT HERE: the things themselves. `schema:Product` is Schema.org's and
+# stays Schema.org's. This file makes statements ABOUT those classes — which
+# step they serve — and defines no class of its own.
+#
+# One process is modelled. B2B, procure-to-pay and returns-heavy variants are
+# further schemes in this file, not further files: `skos:ConceptScheme` is the
+# unit, and a workspace cites the scheme it runs.
+# ============================================================
+
+<http://ovs.dlab5.net/ontology/process>
+    a owl:Ontology , ovs:ProcessOntology ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/process/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    owl:imports <http://ovs.dlab5.net/ontology/core> ;
+    rdfs:label "OntoVibeShift process layer"@en ,
+               "OntoVibeShift-Prozessebene"@de ,
+               "Couche de processus d'OntoVibeShift"@fr ;
+    dcterms:description "Business processes as SKOS concept schemes, and which Schema.org concepts serve each step."@en .
+
+# -- B2C order-to-cash ---------------------------------------------------------
+
+proc:B2COrderToCash a skos:ConceptScheme ;
+    skos:prefLabel "B2C order to cash"@en ,
+                   "B2C Auftrag bis Zahlung"@de ,
+                   "B2C de la commande à l'encaissement"@fr ;
+    skos:definition "Selling to a consumer: from the catalogue a shopper sees to the money settled and the goods delivered."@en ;
+    skos:hasTopConcept proc:Present , proc:Promise , proc:Capture ,
+                       proc:Settle , proc:Fulfil , proc:AfterSale .
+
+proc:Present a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:topConceptOf proc:B2COrderToCash ;
+    skos:prefLabel "present the catalogue"@en , "Katalog darstellen"@de , "présenter le catalogue"@fr ;
+    skos:definition "Making what is for sale findable and describable to a shopper."@en ;
+    skos:narrower proc:Classify , proc:Describe .
+
+proc:Classify a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:broader proc:Present ;
+    skos:prefLabel "classify"@en , "klassifizieren"@de , "classer"@fr ;
+    skos:definition "Grouping goods so they can be browsed. A tree in one system is often flat in another — see concept C-02."@en .
+
+proc:Describe a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:broader proc:Present ;
+    skos:prefLabel "describe"@en , "beschreiben"@de , "décrire"@fr ;
+    skos:definition "The attributes, media and copy a shopper reads. Per locale — ADR-0007."@en .
+
+proc:Promise a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:topConceptOf proc:B2COrderToCash ;
+    skos:prefLabel "price and promise"@en , "Preis und Zusage"@de , "prix et engagement"@fr ;
+    skos:definition "What it costs and whether it can be had: price, tax basis, stock."@en ;
+    skos:narrower proc:Price , proc:Avail .
+
+proc:Price a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:broader proc:Promise ;
+    skos:prefLabel "price"@en , "bepreisen"@de , "tarifer"@fr ;
+    skos:definition "The amount asked, on a stated tax basis — see concept C-29."@en .
+
+proc:Avail a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:broader proc:Promise ;
+    skos:prefLabel "undertake availability"@en , "Verfügbarkeit zusagen"@de , "garantir la disponibilité"@fr ;
+    skos:definition "Whether stock can be committed, and which system is the record of it — see concept C-11."@en .
+
+proc:Capture a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:topConceptOf proc:B2COrderToCash ;
+    skos:prefLabel "capture the order"@en , "Auftrag erfassen"@de , "saisir la commande"@fr ;
+    skos:definition "Turning an intention into a commitment with a reference."@en .
+
+proc:Settle a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:topConceptOf proc:B2COrderToCash ;
+    skos:prefLabel "settle payment"@en , "Zahlung abwickeln"@de , "régler le paiement"@fr ;
+    skos:definition "Taking and reconciling the money."@en .
+
+proc:Fulfil a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:topConceptOf proc:B2COrderToCash ;
+    skos:prefLabel "fulfil"@en , "erfüllen"@de , "exécuter"@fr ;
+    skos:definition "Picking, packing, shipping, and saying where it is."@en .
+
+proc:AfterSale a skos:Concept ;
+    skos:inScheme proc:B2COrderToCash ; skos:topConceptOf proc:B2COrderToCash ;
+    skos:prefLabel "after the sale"@en , "nach dem Verkauf"@de , "après la vente"@fr ;
+    skos:definition "Returns, refunds, service and the customer record that outlives one order."@en .
+
+# -- which concepts serve which step -------------------------------------------
+#
+# Statements about Schema.org's classes, not redefinitions of them. This is the
+# join a system term reaches: odoo:product.template --closeMatch--> schema:Product,
+# and schema:Product serves `present` and `promise`.
+
+schema:Product        ovs:processStep proc:Describe , proc:Classify , proc:Price .
+schema:OfferCatalog   ovs:processStep proc:Classify .
+schema:Offer          ovs:processStep proc:Price , proc:Avail .
+schema:Order          ovs:processStep proc:Capture .
+schema:Invoice        ovs:processStep proc:Settle .
+schema:ParcelDelivery ovs:processStep proc:Fulfil .
+schema:Person         ovs:processStep proc:AfterSale .
+schema:Organization   ovs:processStep proc:AfterSale .
+
+# The patch layer, used HERE and not everywhere. ADR-0011: `gr:` is reached for
+# only where an ERP carries business logic a storefront vocabulary ignores. A
+# consumer price is a schema:Offer; a contract-governed tiered price with a unit
+# of measure is not, and that is an ERP's business.
+gr:UnitPriceSpecification ovs:processStep proc:Price .
+gr:QuantitativeValue      ovs:processStep proc:Avail .
