@@ -170,9 +170,10 @@ In ovs-dlab5-edge, after phases 2 to 4 are merged and the tree is clean:
    flat file and repoint the imports.
 3. `cognito.py` and `targets.py`: as decided in phase 3.
 4. **The full chat, as the Mediathek edge has it.** It comes with the layer
-   (template-dlab5-edge `stage` from 2026-11-09; the plugin
-   `dlab5-edge-template` 1.1.0 describes it), so take it rather than port the
-   flat `chat.py`:
+   (template-dlab5-edge `main` with its PR #3 merged: check that
+   `ovs_dlab5_edge/edge/chat.py` has `class History`; if not, the layer is
+   too old, so tell the person and stop. The plugin `dlab5-edge-template`
+   1.1.0 describes it.) Take it rather than port the flat `chat.py`:
    - waiting proposals survive a restart and are checked again;
    - the person's decisions, and why a confirmed one failed, are told to
      Claude with the next message; the `proposals()` tool lists outcomes;
