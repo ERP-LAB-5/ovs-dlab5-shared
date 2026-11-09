@@ -1,0 +1,210 @@
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix ovssh:   <http://ovs.dlab5.net/shapes#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# The layering rules, as SHACL. These validate ONTOLOGY DOCUMENTS, not A-Boxes
+# — shapes/ovs-shapes.ttl does that.
+#
+# HOW TO RUN: validate a document TOGETHER with what it imports, because the
+# rules are about the relationship between layers and a lone file cannot show
+# one. Validating an L3 file alone will pass rules it should fail.
+#
+#   python -m pyshacl -s shapes/ovs-layers.ttl -sf turtle -df turtle \
+#     --inference rdfs \
+#     <(cat tbox/ovs.ttl systems/odoo-17.0.ttl examples/customization-acme-odoo.ttl)
+#
+# `--inference rdfs` is deliberate: the three customization kinds are
+# subclasses of ovs:Customization, and without it a node typed ovs:Extension
+# is not seen as a Customization. The kind-specific rules below do NOT depend
+# on inference; only the shared ones do.
+#
+# A SHACL suite that passes everything proves nothing. examples/invalid/ holds
+# one document per rule, each of which MUST fail.
+# ============================================================
+
+# -- a system ontology must say what it is ------------------------------------
+#
+# Without the version this layer has no point: "an axiom written against a
+# model that no longer exists" is the failure the product claims to catch, and
+# it is uncatchable if the document does not pin a version.
+
+ovssh:SystemOntologyShape a sh:NodeShape ;
+    sh:targetClass ovs:SystemOntology ;
+    sh:property [
+        sh:path owl:versionIRI ;
+        sh:minCount 1 ;
+        sh:message "A system ontology must carry owl:versionIRI: an unversioned system model cannot be cited by an axiom."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:describesSystem ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:class ovs:System ;
+        sh:message "A system ontology describes exactly one system, named as an ovs:System individual."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:systemVersion ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:datatype <http://www.w3.org/2001/XMLSchema#string> ;
+        sh:message "A system ontology states the vendor's own version string."@en ;
+    ] ;
+    sh:property [
+        sh:path dcterms:source ;
+        sh:minCount 1 ;
+        sh:message "A system ontology attributes itself: this model is someone else's, and the document should say whose."@en ;
+    ] .
+
+# -- a customization ontology imports exactly one system version ---------------
+#
+# One document per connection. A deployment running two systems has two of
+# these, because "what did you change about Odoo 17.0" and the same question
+# about Shopify are two diffs against two baselines. Allowing several imports
+# would let a customization sit over an ambiguous core.
+
+# It must import the VERSION IRI, not the ontology IRI. `…/system/odoo` means
+# "whatever Odoo model is current", which is exactly the vagueness the version
+# exists to remove; `…/system/odoo/17.0` pins the baseline the diff was taken
+# against. So the rule is not "imports a system ontology" but "imports a
+# published version OF one", which an inverse path says directly — and which
+# an import of the unversioned IRI therefore fails.
+
+ovssh:PublishedSystemVersion a sh:NodeShape ;
+    sh:property [
+        sh:path [ sh:inversePath owl:versionIRI ] ;
+        sh:minCount 1 ;
+        sh:class ovs:SystemOntology ;
+        sh:message "Not a published version of a system ontology."@en ;
+    ] .
+
+ovssh:CustomizationOntologyShape a sh:NodeShape ;
+    sh:targetClass ovs:CustomizationOntology ;
+    sh:property [
+        sh:path owl:imports ;
+        sh:qualifiedValueShape ovssh:PublishedSystemVersion ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1 ;
+        sh:message "A customization ontology imports exactly one system ontology VERSION - the baseline it is a diff against, e.g. .../system/odoo/17.0 and not .../system/odoo. Validate it together with that baseline, or this rule cannot see it."@en ;
+    ] .
+
+# -- no system term is matched to another system term -------------------------
+#
+# ADR-0011: system terms are the ENDS of an alignment, never its middle. Both
+# ends reach a concept, and that indirection is what lets either system change
+# without the other needing to know. A direct match is the brittle binding
+# this product exists to replace.
+#
+# Lineage is exempt and has its own property, ovs:succeeds — SAP S/4's
+# I_Product really does descend from ECC's MARA, and that is worth stating.
+# It asserts nothing about meaning, so it is not an alignment.
+
+ovssh:NoDirectSystemMatchShape a sh:NodeShape ;
+    sh:targetClass ovs:SystemTerm ;
+    sh:property [
+        sh:path skos:exactMatch ;
+        sh:not [ sh:class ovs:SystemTerm ] ;
+        sh:message "A system term may not skos:exactMatch another system term. Match both into the process layer instead; for same-vendor descent use ovs:succeeds."@en ;
+    ] ;
+    sh:property [
+        sh:path skos:closeMatch ;
+        sh:not [ sh:class ovs:SystemTerm ] ;
+        sh:message "A system term may not skos:closeMatch another system term. Match both into the process layer instead; for same-vendor descent use ovs:succeeds."@en ;
+    ] ;
+    sh:property [
+        sh:path skos:broadMatch ;
+        sh:not [ sh:class ovs:SystemTerm ] ;
+        sh:message "A system term may not skos:broadMatch another system term."@en ;
+    ] ;
+    sh:property [
+        sh:path skos:narrowMatch ;
+        sh:not [ sh:class ovs:SystemTerm ] ;
+        sh:message "A system term may not skos:narrowMatch another system term."@en ;
+    ] .
+
+# -- owl:equivalentClass is not used in this scheme ---------------------------
+#
+# It is a logical commitment, and the commitments it licenses are false here.
+# `odoo:product.template owl:equivalentClass schema:Product` says every
+# template IS a Product and every Product IS a template; a reasoner may then
+# put a variant's price on the parent. SKOS mapping properties are built for
+# "same concept, different scheme" and carry no such entailment, which is why
+# the gradation is also informative: see ADR-0015.
+
+ovssh:NoEquivalentClassShape a sh:NodeShape ;
+    sh:targetClass ovs:SystemTerm ;
+    sh:property [
+        sh:path owl:equivalentClass ;
+        sh:maxCount 0 ;
+        sh:message "Use skos:exactMatch / closeMatch / broadMatch, not owl:equivalentClass: a system term is not logically identical to a concept, and asserting that it is licenses false inferences."@en ;
+    ] .
+
+# -- shared rules for every customization -------------------------------------
+#
+# Reached by sh:node from the three kind shapes, so the kind-specific rules
+# work with or without inference.
+
+ovssh:CustomizationCommon a sh:NodeShape ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:message "A customization needs a label: a reviewer has to be able to tell what it is without reading the IRI."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:concerns ;
+        sh:minCount 1 ;
+        sh:message "A customization must name the core term it concerns, through ovs:extends, ovs:alters or ovs:suppresses."@en ;
+    ] .
+
+# -- each kind names what it does, with the matching property -----------------
+
+ovssh:ExtensionShape a sh:NodeShape ;
+    sh:targetClass ovs:Extension ;
+    sh:node ovssh:CustomizationCommon ;
+    sh:property [
+        sh:path ovs:extends ;
+        sh:minCount 1 ;
+        sh:class ovs:SystemTerm ;
+        sh:message "An extension names the core term it was added to, with ovs:extends."@en ;
+    ] .
+
+ovssh:AlterationShape a sh:NodeShape ;
+    sh:targetClass ovs:Alteration ;
+    sh:node ovssh:CustomizationCommon ;
+    sh:property [
+        sh:path ovs:alters ;
+        sh:minCount 1 ;
+        sh:class ovs:SystemTerm ;
+        sh:message "An alteration names the core term whose constraints changed, with ovs:alters."@en ;
+    ] ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:qualifiedValueShape [ sh:in ( sh:NodeShape ) ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:message "An alteration is a constraint, so it is also a sh:NodeShape stating what changed. Nothing new exists to subclass; the shape IS the customization."@en ;
+    ] .
+
+ovssh:SuppressionShape a sh:NodeShape ;
+    sh:targetClass ovs:Suppression ;
+    sh:node ovssh:CustomizationCommon ;
+    sh:property [
+        sh:path ovs:suppresses ;
+        sh:minCount 1 ;
+        sh:class ovs:SystemTerm ;
+        sh:message "A suppression names the core term that is not used, with ovs:suppresses."@en ;
+    ] .
+
+# -- a customization is exactly one of the three kinds ------------------------
+
+ovssh:CustomizationKindShape a sh:NodeShape ;
+    sh:targetClass ovs:Customization ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:qualifiedValueShape [ sh:in ( ovs:Extension ovs:Alteration ovs:Suppression ) ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1 ;
+        sh:message "A customization is exactly one of ovs:Extension, ovs:Alteration or ovs:Suppression. The three are treated differently on purpose and a node that is two of them has no defined handling."@en ;
+    ] .
