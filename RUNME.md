@@ -169,9 +169,31 @@ In ovs-dlab5-edge, after phases 2 to 4 are merged and the tree is clean:
    lacks goes back to template-dlab5-edge as its own PR. Then delete the
    flat file and repoint the imports.
 3. `cognito.py` and `targets.py`: as decided in phase 3.
-4. `./test.sh`, `./run.sh`, then link to the sandbox cloud from phase 4 and
-   sync one A-Box.
-5. Re-assess: type **edge**, `--run-checks`, no must left. PR into `stage`.
+4. **The full chat, as the Mediathek edge has it.** It comes with the layer
+   (template-dlab5-edge `main` with its PR #3 merged: check that
+   `ovs_dlab5_edge/edge/chat.py` has `class History`; if not, the layer is
+   too old, so tell the person and stop. The plugin `dlab5-edge-template`
+   1.1.0 describes it.) Take it rather than port the flat `chat.py`:
+   - waiting proposals survive a restart and are checked again;
+   - the person's decisions, and why a confirmed one failed, are told to
+     Claude with the next message; the `proposals()` tool lists outcomes;
+   - the last ten conversations can be read again and continued (History);
+   - Stop and History on the page.
+   OntoVibeShift's part goes into `edge/settings.py`: `CHAT_SYSTEM` (what the
+   chat is for, in OntoVibeShift's words), `CHAT_ALLOWED` (every route of the
+   tool's own that a proposal may call: the narrowest pattern that works),
+   and, if the page lets a person choose things to talk about,
+   `CHAT_SELECTION` with a tool of the edge's own that reads them. Each of the
+   tool's changing MCP tools goes through `edge.mcp_tools.act()`, so the
+   panel turns it into a proposal. Anything in the flat `chat.py` the layer
+   lacks goes back to template-dlab5-edge as its own PR.
+5. `./test.sh`, `./run.sh`, then link to the sandbox cloud from phase 4 and
+   sync one A-Box. In the chat: ask for a change, confirm it, dismiss
+   another, restart the edge with one waiting, and continue the conversation
+   from History. Each must behave as
+   [the chat diagram](https://docs.dlab5.net/d-lab-5/cloud-edge/diagrams/flow-chat-proposal.html)
+   shows.
+6. Re-assess: type **edge**, `--run-checks`, no must left. PR into `stage`.
 
 From then on the edge takes fixes with
 `copier update --trust` (the base) and
@@ -179,10 +201,18 @@ From then on the edge takes fixes with
 
 ## 6. The docs, here
 
-- Diagrams with Archify, sources in `diagrams/src/`, listed in
-  `diagrams/README.md`: how the cloud and the edge work together; linking an
-  edge (a sequence); A-Box sync (a dataflow); the lifecycle phases. Facts
+- **What every cloud and edge share is drawn once**, in d-lab-5/cloud-edge-shared
+  ([docs.dlab5.net/d-lab-5/cloud-edge/](https://docs.dlab5.net/d-lab-5/cloud-edge/)):
+  the overview, linking an edge, A-Box sync, the chat's proposals, a
+  connection's life. Link to them; don't redraw them.
+- **Draw here only what is OntoVibeShift's own**, with Archify, sources in
+  `diagrams/src/`, listed in `diagrams/README.md`: its parts and how they map
+  onto the template's (a workspace is a tenant; what a space is here); its
+  own flows, such as the approval before execute (ADR-0008 in ovs-dlab5-net),
+  without naming any customer, system or person; the lifecycle phases. Facts
   from the code, with file paths in the cards. `npm run diagrams`.
+  If phase 3 kept the agent-account sign-in for a while, draw that link as
+  it really is, and say until when.
 - The decisions that shape the product, as ADRs here; the internal ones stay
   in ovs-dlab5-net.
 - `ROADMAP.md` and `site/landing.md` kept current.
