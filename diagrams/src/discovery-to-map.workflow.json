@@ -1,0 +1,295 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "From discovery to Map",
+    "output": "diagrams/discovery-to-map.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "Something you do"
+        },
+        "backend": {
+          "label": "A step on the edge"
+        },
+        "security": {
+          "label": "A gate"
+        },
+        "database": {
+          "label": "Kept in the workspace"
+        },
+        "cloud": {
+          "label": "A cloud row"
+        },
+        "external": {
+          "label": "A source or target system"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "person",
+      "label": "You, on the edge page"
+    },
+    {
+      "id": "edge",
+      "label": "The edge, on this PC"
+    },
+    {
+      "id": "systems",
+      "label": "Odoo and Shopify"
+    },
+    {
+      "id": "cloud",
+      "label": "The cloud workspace"
+    }
+  ],
+  "phases": [
+    {
+      "id": "discover",
+      "label": "Discover",
+      "fromCol": 0,
+      "toCol": 2
+    },
+    {
+      "id": "derive",
+      "label": "Derive",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "model",
+      "label": "Model, then Map",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "connect",
+    "rehearse",
+    "read",
+    "derive",
+    "allocate",
+    "gate",
+    "map"
+  ],
+  "nodes": [
+    {
+      "id": "connect",
+      "lane": "person",
+      "col": 0,
+      "type": "frontend",
+      "label": "Connect",
+      "sublabel": "secret typed on the page",
+      "width": 150
+    },
+    {
+      "id": "allocate",
+      "lane": "person",
+      "col": 4,
+      "type": "frontend",
+      "label": "Allocate a step",
+      "sublabel": "Odoo, Shopify or both",
+      "width": 150
+    },
+    {
+      "id": "map",
+      "lane": "person",
+      "col": 5,
+      "type": "frontend",
+      "label": "Map",
+      "sublabel": "field to field",
+      "tag": "next",
+      "width": 150
+    },
+    {
+      "id": "rehearse",
+      "lane": "edge",
+      "col": 1,
+      "type": "backend",
+      "label": "Rehearse",
+      "sublabel": "one call, reads nothing",
+      "width": 150
+    },
+    {
+      "id": "read",
+      "lane": "edge",
+      "col": 2,
+      "type": "backend",
+      "label": "Read",
+      "sublabel": "a run, written once",
+      "width": 150
+    },
+    {
+      "id": "derive",
+      "lane": "edge",
+      "col": 3,
+      "type": "backend",
+      "label": "Derive",
+      "sublabel": "as-is and availability",
+      "width": 150
+    },
+    {
+      "id": "gate",
+      "lane": "edge",
+      "col": 5,
+      "type": "security",
+      "label": "Map gate",
+      "sublabel": "every top-level step",
+      "width": 150
+    },
+    {
+      "id": "systems",
+      "lane": "systems",
+      "col": 1,
+      "type": "external",
+      "label": "Odoo, Shopify",
+      "sublabel": "never written to",
+      "tag": "read only",
+      "width": 150
+    },
+    {
+      "id": "snapshot",
+      "lane": "cloud",
+      "col": 2,
+      "type": "database",
+      "label": "Run snapshot",
+      "sublabel": "write-once",
+      "width": 150
+    },
+    {
+      "id": "abox",
+      "lane": "cloud",
+      "col": 3,
+      "type": "database",
+      "label": "Workspace A-Box",
+      "sublabel": "SHACL-checked",
+      "width": 150
+    },
+    {
+      "id": "decision",
+      "lane": "cloud",
+      "col": 4,
+      "type": "cloud",
+      "label": "Decision row",
+      "sublabel": "reason, option A, B, A+B",
+      "width": 150
+    }
+  ],
+  "edges": [
+    {
+      "id": "connect-rehearse",
+      "from": "connect",
+      "to": "rehearse",
+      "label": "plan",
+      "variant": "emphasis"
+    },
+    {
+      "id": "rehearse-check",
+      "from": "rehearse",
+      "to": "systems",
+      "label": "sign in only",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "rehearse-read",
+      "from": "rehearse",
+      "to": "read",
+      "label": "you read",
+      "variant": "emphasis"
+    },
+    {
+      "id": "read-systems",
+      "from": "read",
+      "to": "systems",
+      "label": "read-only calls",
+      "variant": "security",
+      "role": "branch"
+    },
+    {
+      "id": "read-publish",
+      "from": "read",
+      "to": "snapshot",
+      "label": "sync",
+      "variant": "dashed",
+      "role": "async"
+    },
+    {
+      "id": "read-derive",
+      "from": "read",
+      "to": "derive",
+      "label": "newest run"
+    },
+    {
+      "id": "derive-abox",
+      "from": "derive",
+      "to": "abox",
+      "label": "merge",
+      "variant": "dashed",
+      "role": "async"
+    },
+    {
+      "id": "derive-allocate",
+      "from": "derive",
+      "to": "allocate",
+      "label": "per step",
+      "variant": "emphasis"
+    },
+    {
+      "id": "overlap-decision",
+      "from": "allocate",
+      "to": "decision",
+      "label": "overlap: reason first",
+      "variant": "security",
+      "role": "branch"
+    },
+    {
+      "id": "allocate-gate",
+      "from": "allocate",
+      "to": "gate",
+      "label": "allocation"
+    },
+    {
+      "id": "gate-map",
+      "from": "gate",
+      "to": "map",
+      "label": "all allocated",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Discover (ADR-0016)",
+      "items": [
+        "The edge reads; the source systems are never written to. Odoo: authenticate, search_read, fields_get, search_count. Shopify: GraphQL queries only.",
+        "The secret stays in the edge's own store, never in the work directory or the cloud.",
+        "ovs-dlab5-edge: ovs_dlab5_edge/discovery.py, connectors/"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Derive (ADR-0018)",
+      "items": [
+        "As-is: which Odoo capabilities realise each B2C step, with evidence: records counted, or only a module installed.",
+        "Availability: what the Shopify store has (included, installed) or can get (licensable). Available is not used.",
+        "Both from runs already on this PC; nothing is read again. realise.py, availability.py"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Model, then Map",
+      "items": [
+        "A step both sides could do is an overlap: allocating it is a decision with a reason, recorded as the workspace's Decision row before the allocation is written. allocate.py",
+        "The Map gate opens when every top-level step is allocated: shapes/ovs-map-ready.ttl in ovs-dlab5-net.",
+        "Map, field to field, is the next step: it is not built yet."
+      ]
+    }
+  ]
+}

@@ -18,9 +18,15 @@ gallery card's text.
 
 ## End to end
 
+- [From discovery to Map](../diagrams/discovery-to-map.html): What happens from connecting a system to the Map gate: the edge reads Odoo and Shopify without changing them, derives what each does and can do per B2C step, and a person allocates each step, an overlap as a decision.
+
 ## Cloud
 
 ## Edge
 
+- [The edge: what runs on this PC](../diagrams/edge.html): The page, the chat that only proposes, discovery with its credential store, the work directory, and what goes to the cloud workspace and how.
+
 ## Models
+
+- [Ontology layers and a workspace's outcomes](../diagrams/ontology-layers.html): The product T-Box (process, capabilities, system cores) and what one workspace holds against it: as-is, availability, to-be, decisions, customizations and mappings.
 
