@@ -22,6 +22,8 @@ gallery card's text.
 
 ## Cloud
 
+- [The cloud: one Amplify app per environment](../diagrams/cloud.html): Who gets in (invited users, a group per workspace, the edge's own app client), and how a request reaches its rows, its objects behind the proxy's group check, and a connection's secret.
+
 ## Edge
 
 - [The edge: what runs on this PC](../diagrams/edge.html): The page, the chat that only proposes, discovery with its credential store, the work directory, and what goes to the cloud workspace and how.
