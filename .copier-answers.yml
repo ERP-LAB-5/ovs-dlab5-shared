@@ -7,8 +7,10 @@ description: 'An ontology-driven data lifecycle engine: business platforms as on
     the D-LAB-5 templates.'
 diagram_groups: End to end, Cloud, Edge, Models
 domain: erp-lab-5
-languages: en
-ontology: false
+languages: en,fr,de
+ontology: true
+ontology_files: tbox/ovs.ttl, tbox/ovs-concepts.ttl, shapes/ovs-shapes.ttl, shapes/ovs-layers.ttl
+ontology_source: ../ovs-dlab5-net/packages/ontology
 own_domain: ''
 product: OntoVibeShift
 repo: ERP-LAB-5/ovs-dlab5-shared

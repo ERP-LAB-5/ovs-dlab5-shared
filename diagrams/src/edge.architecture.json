@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "The edge: what runs on this PC",
+    "output": "diagrams/edge.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "The page"
+        },
+        "backend": {
+          "label": "A part of the edge"
+        },
+        "database": {
+          "label": "Kept on this PC"
+        },
+        "cloud": {
+          "label": "The cloud"
+        },
+        "security": {
+          "label": "Secrets"
+        },
+        "external": {
+          "label": "Outside the edge"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "you",
+      "type": "external",
+      "label": "You",
+      "sublabel": "a browser on this PC",
+      "pos": [
+        40,
+        240
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "page",
+      "type": "frontend",
+      "label": "Edge page",
+      "sublabel": "Flask, loopback only",
+      "pos": [
+        260,
+        240
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "chat",
+      "type": "backend",
+      "label": "Chat",
+      "sublabel": "local Claude Code, edge tools",
+      "pos": [
+        260,
+        60
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "proposes"
+    },
+    {
+      "id": "discover",
+      "type": "backend",
+      "label": "Discover",
+      "sublabel": "rehearse, then read",
+      "pos": [
+        500,
+        240
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "secrets",
+      "type": "security",
+      "label": "Credential store",
+      "sublabel": "this PC only",
+      "pos": [
+        500,
+        60
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "never synced"
+    },
+    {
+      "id": "systems",
+      "type": "external",
+      "label": "Odoo, Shopify",
+      "sublabel": "never written to",
+      "pos": [
+        500,
+        780
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "workdir",
+      "type": "database",
+      "label": "Work directory",
+      "sublabel": "runs, media, A-Box",
+      "pos": [
+        740,
+        240
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "derive",
+      "type": "backend",
+      "label": "Derive, allocate",
+      "sublabel": "as-is, availability, to-be",
+      "pos": [
+        740,
+        420
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "abox",
+      "type": "database",
+      "label": "Workspace A-Box",
+      "sublabel": "checked by SHACL shapes",
+      "pos": [
+        740,
+        600
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "cloud",
+      "type": "cloud",
+      "label": "Cloud workspace",
+      "sublabel": "AppSync, S3, as the edge's account",
+      "pos": [
+        1000,
+        240
+      ],
+      "size": [
+        190,
+        72
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "This PC",
+      "wraps": [
+        "you",
+        "page",
+        "chat",
+        "discover",
+        "secrets",
+        "workdir",
+        "derive",
+        "abox"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Secrets stay here",
+      "wraps": [
+        "secrets"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "you-page",
+      "from": "you",
+      "to": "page",
+      "label": "HTTP",
+      "variant": "emphasis"
+    },
+    {
+      "id": "chat-page",
+      "from": "chat",
+      "to": "page",
+      "label": "you confirm",
+      "variant": "security"
+    },
+    {
+      "id": "page-discover",
+      "from": "page",
+      "to": "discover",
+      "label": "rehearse, read",
+      "variant": "emphasis"
+    },
+    {
+      "id": "secret-discover",
+      "from": "secrets",
+      "to": "discover",
+      "label": "secret",
+      "variant": "security"
+    },
+    {
+      "id": "discover-systems",
+      "from": "discover",
+      "to": "systems",
+      "label": "read only",
+      "variant": "security"
+    },
+    {
+      "id": "discover-workdir",
+      "from": "discover",
+      "to": "workdir",
+      "label": "a run, once",
+      "variant": "emphasis"
+    },
+    {
+      "id": "workdir-cloud",
+      "from": "workdir",
+      "to": "cloud",
+      "label": "runs, media",
+      "variant": "emphasis"
+    },
+    {
+      "id": "workdir-derive",
+      "from": "workdir",
+      "to": "derive",
+      "label": "newest runs"
+    },
+    {
+      "id": "derive-abox",
+      "from": "derive",
+      "to": "abox",
+      "label": "statements"
+    },
+    {
+      "id": "derive-decision",
+      "from": "derive",
+      "to": "cloud",
+      "label": "Decision rows",
+      "variant": "dashed"
+    },
+    {
+      "id": "abox-sync",
+      "from": "abox",
+      "to": "cloud",
+      "label": "3-way merge",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "The page and the chat",
+      "items": [
+        "The page and its API serve on loopback only: routes.py, templates/index.html.",
+        "The chat has no tools of its own, only the edge's; every change it suggests is a proposal you confirm: chat.py, mcp_tools.py, settings.CHAT_ALLOWED.",
+        "A secret is typed on the page; the chat may never save one."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Discover",
+      "items": [
+        "A rehearsal lists every call and proves the secret with one call that reads nothing; a read writes a new run, never a rewrite: discovery.py.",
+        "Odoo: authenticate, search_read, fields_get, search_count. Shopify: GraphQL queries only: connectors/."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Knowledge",
+      "items": [
+        "As-is realisation, target availability and the to-be allocation are derived from runs already here: realise.py, availability.py, allocate.py.",
+        "Every change is checked by the cloud's own SHACL shapes, copied by scripts/sync-ontology.sh: knowledge.py.",
+        "Sync merges three ways and writes nothing until the merge passes the shapes: sync.py. Runs and media: publish.py."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Where it is",
+      "items": [
+        "All paths are in ovs-dlab5-edge, under ovs_dlab5_edge/. ADR-0016 (discovery on the edge) and ADR-0018 (capabilities)."
+      ]
+    }
+  ]
+}
