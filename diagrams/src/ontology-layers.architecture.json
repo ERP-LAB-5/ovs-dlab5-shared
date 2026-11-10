@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Ontology layers and a workspace's outcomes",
+    "output": "diagrams/ontology-layers.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "backend": {
+          "label": "T-Box: product knowledge"
+        },
+        "database": {
+          "label": "A-Box: one workspace"
+        },
+        "cloud": {
+          "label": "Cloud row"
+        },
+        "external": {
+          "label": "Standard vocabulary"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "process",
+      "type": "backend",
+      "label": "L1 Process",
+      "sublabel": "B2C order to cash: the steps",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        230,
+        72
+      ]
+    },
+    {
+      "id": "capability",
+      "type": "backend",
+      "label": "Lc Capabilities",
+      "sublabel": "Odoo 18.0, Shopify 2026-07",
+      "pos": [
+        40,
+        260
+      ],
+      "size": [
+        230,
+        150
+      ],
+      "tag": "how obtained"
+    },
+    {
+      "id": "system",
+      "type": "backend",
+      "label": "L2 System cores",
+      "sublabel": "models and fields, generated",
+      "pos": [
+        40,
+        540
+      ],
+      "size": [
+        230,
+        150
+      ]
+    },
+    {
+      "id": "schemaorg",
+      "type": "external",
+      "label": "Schema.org",
+      "sublabel": "graded SKOS matches",
+      "pos": [
+        40,
+        800
+      ],
+      "size": [
+        230,
+        60
+      ]
+    },
+    {
+      "id": "allocation",
+      "type": "database",
+      "label": "To-be allocation",
+      "sublabel": "step: Odoo, Shopify or both",
+      "pos": [
+        400,
+        68
+      ],
+      "size": [
+        230,
+        56
+      ]
+    },
+    {
+      "id": "decision",
+      "type": "cloud",
+      "label": "Decision row",
+      "sublabel": "reason, option A, B, A+B",
+      "pos": [
+        760,
+        68
+      ],
+      "size": [
+        210,
+        56
+      ]
+    },
+    {
+      "id": "availability",
+      "type": "database",
+      "label": "Target availability",
+      "sublabel": "included, installed, licensable",
+      "pos": [
+        400,
+        272
+      ],
+      "size": [
+        230,
+        56
+      ]
+    },
+    {
+      "id": "realisation",
+      "type": "database",
+      "label": "As-is realisation",
+      "sublabel": "which capability, on what evidence",
+      "pos": [
+        400,
+        344
+      ],
+      "size": [
+        230,
+        56
+      ]
+    },
+    {
+      "id": "snapshot",
+      "type": "database",
+      "label": "Discovery run",
+      "sublabel": "snapshot, write-once",
+      "pos": [
+        760,
+        344
+      ],
+      "size": [
+        210,
+        56
+      ]
+    },
+    {
+      "id": "customization",
+      "type": "database",
+      "label": "L3 Customizations",
+      "sublabel": "what one deployment changed",
+      "pos": [
+        400,
+        552
+      ],
+      "size": [
+        230,
+        56
+      ]
+    },
+    {
+      "id": "mapping",
+      "type": "cloud",
+      "label": "Mapping axioms",
+      "sublabel": "Map: term to term, next",
+      "pos": [
+        400,
+        624
+      ],
+      "size": [
+        230,
+        56
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Product T-Box: packages/ontology, public",
+      "wraps": [
+        "process",
+        "capability",
+        "system"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "One workspace: in its cloud, never in a repository",
+      "wraps": [
+        "allocation",
+        "decision",
+        "availability",
+        "realisation",
+        "snapshot",
+        "customization",
+        "mapping"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "capability-serves",
+      "from": "capability",
+      "to": "process",
+      "label": "serves steps",
+      "variant": "emphasis"
+    },
+    {
+      "id": "capability-implemented",
+      "from": "capability",
+      "to": "system",
+      "label": "implemented by",
+      "variant": "emphasis"
+    },
+    {
+      "id": "system-matches",
+      "from": "system",
+      "to": "schemaorg",
+      "label": "close, exact, broad"
+    },
+    {
+      "id": "allocation-step",
+      "from": "allocation",
+      "to": "process",
+      "label": "a step"
+    },
+    {
+      "id": "allocation-decision",
+      "from": "allocation",
+      "to": "decision",
+      "label": "an overlap",
+      "variant": "security"
+    },
+    {
+      "id": "availability-capability",
+      "from": "availability",
+      "to": "capability",
+      "label": "has, can get"
+    },
+    {
+      "id": "realisation-capability",
+      "from": "realisation",
+      "to": "capability",
+      "label": "in use"
+    },
+    {
+      "id": "realisation-evidence",
+      "from": "realisation",
+      "to": "snapshot",
+      "label": "evidence",
+      "variant": "dashed"
+    },
+    {
+      "id": "customization-core",
+      "from": "customization",
+      "to": "system",
+      "label": "extends, alters"
+    },
+    {
+      "id": "mapping-terms",
+      "from": "mapping",
+      "to": "system",
+      "label": "subject, object",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "The product T-Box (ADR-0015, ADR-0018)",
+      "items": [
+        "L1, the process: tbox/ovs-concepts.ttl. L0, OVS's own terms: tbox/ovs.ttl.",
+        "Lc, per platform and version: what it can do for a step, and how it is obtained (core, edition, plan tier, module, app): capabilities/.",
+        "L2, the data model: systems/. Shopify's is generated from its public Admin API schema by generate/shopify_l2.py; Odoo 18.0's terms are checked against the stock source."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "A workspace's outcomes",
+      "items": [
+        "As-is realisation and target availability, derived on the edge from discovery runs. Availability is never usage.",
+        "To-be allocation: a step both sides could do is a decision a person makes, recorded as the workspace's Decision row.",
+        "L3: what one deployment changed against its L2 version. Never a tracked file."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Rules that bite",
+      "items": [
+        "Every rule has a document that must fail it: check.py runs them all.",
+        "A-Box rules on every change (shapes/ovs-shapes.ttl); the Map gate once, before Map: every top-level step allocated (shapes/ovs-map-ready.ttl).",
+        "All paths are in ovs-dlab5-net, under packages/ontology/."
+      ]
+    }
+  ]
+}

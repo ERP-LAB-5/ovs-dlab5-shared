@@ -1,1 +1,14 @@
-{}
+{
+  "discovery-to-map": {
+    "source": "887622934fe847b2862d30e4c06637aea17538187e4569148456082feb735196",
+    "page": "d3e2205d86767a6f32934b575a7521fef22e87aff3e2d3e9db74daa00b672123"
+  },
+  "edge": {
+    "source": "5d96ed57ba5f1b558056296037bfdc4b9e977fdd88549beb7bda7d41ee788b2a",
+    "page": "01c9cdbbaee30748e54bee38b676a4c35087682c26d13c203096aabd5e42b4e2"
+  },
+  "ontology-layers": {
+    "source": "58eeb9aa421d9927151c385ad423dd5129996dada63440e58ec978d250ac4ef4",
+    "page": "ea4ee981e1fde59618880c1d5ad41c8bfa5f279f8e2cecb74d4733a633e4905b"
+  }
+}
