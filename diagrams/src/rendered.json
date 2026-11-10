@@ -1,4 +1,8 @@
 {
+  "cloud": {
+    "source": "6992818fcacb8b82449c885d36182da4cd375d293e1ec03aac9641f24363ccad",
+    "page": "4372273fd46ae41c7e53f841b1ec3d247007e365c2ed3e6afc62da05f97b809b"
+  },
   "discovery-to-map": {
     "source": "961d27c777c90f3791f9311859e294b2eb8d559cfdd896fd8a0c6d43f62baafb",
     "page": "d3e2205d86767a6f32934b575a7521fef22e87aff3e2d3e9db74daa00b672123"
