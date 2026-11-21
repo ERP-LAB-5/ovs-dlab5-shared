@@ -20,6 +20,8 @@ gallery card's text.
 
 - [From discovery to Map](../diagrams/discovery-to-map.html): What happens from connecting a system to the Map gate: the edge reads Odoo and Shopify without changing them, derives what each does and can do per B2C step, and a person allocates each step, an overlap as a decision.
 
+- [Execute: from a plan to the shop, with two approvals](../diagrams/execution-approval.html): How a migration reaches the shop: the edge reads the picked products from Odoo and plans the writes, the cloud checks the plan and names it by its SHA-256, a person approves it, and only an approved plan is sent: first the products in DRAFT, then, after a second approval, the release that puts them on sale.
+
 ## Cloud
 
 - [The cloud: one Amplify app per environment](../diagrams/cloud.html): Who gets in (invited users, a group per workspace, the edge's own app client), and how a request reaches its rows, its objects behind the proxy's group check, and a connection's secret.

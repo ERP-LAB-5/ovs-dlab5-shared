@@ -1,0 +1,314 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Execute: from a plan to the shop, with two approvals",
+    "output": "diagrams/execution-approval.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "Something you do"
+        },
+        "backend": {
+          "label": "A step on the edge"
+        },
+        "security": {
+          "label": "A gate"
+        },
+        "cloud": {
+          "label": "A cloud run"
+        },
+        "external": {
+          "label": "A source or target system"
+        }
+      }
+    },
+    "viewBox": [
+      1080,
+      660
+    ]
+  },
+  "lanes": [
+    {
+      "id": "person",
+      "label": "You"
+    },
+    {
+      "id": "edge",
+      "label": "The edge, on this PC"
+    },
+    {
+      "id": "cloud",
+      "label": "The cloud workspace"
+    },
+    {
+      "id": "systems",
+      "label": "Odoo and Shopify"
+    }
+  ],
+  "phases": [
+    {
+      "id": "plan",
+      "label": "Plan",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "approve",
+      "label": "Approve",
+      "fromCol": 2,
+      "toCol": 2,
+      "variant": "security"
+    },
+    {
+      "id": "apply",
+      "label": "Apply, in DRAFT",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "release",
+      "label": "Release",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "pick",
+    "prepare",
+    "validate",
+    "approve-apply",
+    "gate",
+    "run-apply",
+    "prepare-release",
+    "approve-release",
+    "run-release"
+  ],
+  "nodes": [
+    {
+      "id": "pick",
+      "lane": "person",
+      "col": 0,
+      "type": "frontend",
+      "label": "Pick products",
+      "sublabel": "pricelist, images, type",
+      "width": 150
+    },
+    {
+      "id": "approve-apply",
+      "lane": "person",
+      "col": 2,
+      "type": "frontend",
+      "label": "Approve the plan",
+      "sublabel": "its counts and SHA-256",
+      "width": 150
+    },
+    {
+      "id": "approve-release",
+      "lane": "person",
+      "col": 4,
+      "type": "frontend",
+      "label": "Approve release",
+      "sublabel": "a second plan",
+      "width": 150
+    },
+    {
+      "id": "prepare",
+      "lane": "edge",
+      "col": 1,
+      "type": "backend",
+      "label": "Prepare",
+      "sublabel": "extract, then plan",
+      "width": 150
+    },
+    {
+      "id": "run-apply",
+      "lane": "edge",
+      "col": 3,
+      "type": "backend",
+      "label": "Run the apply",
+      "sublabel": "step by step, kept",
+      "width": 150
+    },
+    {
+      "id": "prepare-release",
+      "lane": "edge",
+      "col": 4,
+      "type": "backend",
+      "label": "Prepare release",
+      "sublabel": "from what was written",
+      "width": 150
+    },
+    {
+      "id": "run-release",
+      "lane": "edge",
+      "col": 5,
+      "type": "backend",
+      "label": "Run the release",
+      "sublabel": "same gate",
+      "width": 150
+    },
+    {
+      "id": "validate",
+      "lane": "cloud",
+      "col": 1,
+      "type": "cloud",
+      "label": "Validate run",
+      "sublabel": "plan checked, named",
+      "width": 150
+    },
+    {
+      "id": "gate",
+      "lane": "cloud",
+      "col": 3,
+      "type": "security",
+      "label": "Approval gate",
+      "sublabel": "this SHA approved?",
+      "tag": "no --force",
+      "width": 150
+    },
+    {
+      "id": "odoo",
+      "lane": "systems",
+      "col": 0,
+      "type": "external",
+      "label": "Odoo",
+      "sublabel": "never written to",
+      "tag": "read only",
+      "width": 150
+    },
+    {
+      "id": "shop-draft",
+      "lane": "systems",
+      "col": 4,
+      "type": "external",
+      "label": "Shopify, DRAFT",
+      "sublabel": "products, translations",
+      "width": 150
+    },
+    {
+      "id": "shop-live",
+      "lane": "systems",
+      "col": 5,
+      "type": "external",
+      "label": "Shopify, on sale",
+      "sublabel": "ACTIVE, Online Store",
+      "width": 150
+    }
+  ],
+  "edges": [
+    {
+      "id": "pick-prepare",
+      "from": "pick",
+      "to": "prepare",
+      "label": "prepare",
+      "variant": "emphasis"
+    },
+    {
+      "id": "prepare-odoo",
+      "from": "prepare",
+      "to": "odoo",
+      "label": "read by ids",
+      "variant": "security",
+      "role": "branch"
+    },
+    {
+      "id": "prepare-validate",
+      "from": "prepare",
+      "to": "validate",
+      "label": "propose plan"
+    },
+    {
+      "id": "validate-approve",
+      "from": "validate",
+      "to": "approve-apply",
+      "label": "counts, SHA",
+      "variant": "emphasis"
+    },
+    {
+      "id": "approve-gate",
+      "from": "approve-apply",
+      "to": "gate",
+      "label": "approval recorded",
+      "variant": "security"
+    },
+    {
+      "id": "gate-run",
+      "from": "gate",
+      "to": "run-apply",
+      "label": "approved only",
+      "variant": "security"
+    },
+    {
+      "id": "run-shop",
+      "from": "run-apply",
+      "to": "shop-draft",
+      "label": "contract writes",
+      "variant": "emphasis",
+      "role": "branch",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "run-release-prep",
+      "from": "run-apply",
+      "to": "prepare-release",
+      "label": "outcome"
+    },
+    {
+      "id": "release-approve",
+      "from": "prepare-release",
+      "to": "approve-release",
+      "label": "new plan, SHA",
+      "variant": "emphasis"
+    },
+    {
+      "id": "approve-run-release",
+      "from": "approve-release",
+      "to": "run-release",
+      "label": "approved",
+      "variant": "security"
+    },
+    {
+      "id": "release-shop",
+      "from": "run-release",
+      "to": "shop-live",
+      "label": "ACTIVE, publish",
+      "variant": "emphasis",
+      "role": "branch"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Prepare (ADR-0019)",
+      "items": [
+        "The edge reads the picked products from Odoo, only by ids, never a write: their texts in every language, attributes, tags and prices from a chosen pricelist.",
+        "It turns them into a plan of contract writes: setup, colour entries, a productSet per product (always DRAFT), then each product's translations.",
+        "ovs-dlab5-edge: extract.py, apply_plan.py, product_page.py"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "The approval gate (ADR-0008)",
+      "items": [
+        "The cloud checks every step against the write contract, sets forced values, and names the plan by the SHA-256 it computes itself. A person approves those counts and that digest.",
+        "A run asks the gate first. A plan that is not approved, or changed after approval, sends nothing. There is no --force.",
+        "ovs-dlab5-net: functions/execute/plan.ts, connections/writes.ts; ovs-dlab5-edge: execute.py"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Apply, then release",
+      "items": [
+        "Steps go out in order. A reference to an entry or a product written earlier in the run (@mo:, @product:) is filled only from its stored outcome, never from the caller.",
+        "Every step's result is kept. A product written in the apply stays DRAFT until a release plan, approved the same way, makes it ACTIVE and puts it on the Online Store; an undo takes it off again.",
+        "A product the store already had is left alone unless OVS wrote it or a person handed it over."
+      ]
+    }
+  ]
+}
