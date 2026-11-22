@@ -137,8 +137,9 @@ In ovs-dlab5-net, on its own branch, after phase 2 is merged:
    the commit in `.template.json` to its `main`, file by file under
    `backend/` and `packages/site/`.
 2. Port them, mapping the template's **tenant** to OntoVibeShift's
-   **workspace** (the Cognito group per workspace) and its **space** to
-   whatever an A-Box belongs to here. Keep ovs-dlab5-net's own rules: the
+   **organization** and its **space** to a **workspace**
+   ([ADR-0004](adr/0004-organizations-over-workspaces.md); this replaced an
+   earlier mapping of tenant to workspace). Keep ovs-dlab5-net's own rules: the
    approval before execute (ADR-0008), credentials in Secrets Manager
    (ADR-0012), objects behind the proxy Lambda (ADR-0004).
 3. Deploy to a personal sandbox only (`npm --prefix backend run sandbox:once`
