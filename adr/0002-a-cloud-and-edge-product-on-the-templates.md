@@ -21,6 +21,11 @@ OntoVibeShift follows the cloud-and-edge blueprint:
   Copier, so both update from their templates; the hand-made copies go;
 - each repository declares the d-lab-5 plugins its sessions load.
 
+**For v1** ([ADR-0003](0003-v1-the-cloud-is-proxy-gate-and-store.md)): an edge
+keeps signing in as an agent account, now one per organization
+([ADR-0004](0004-organizations-over-workspaces.md)). The device flow below
+comes after v1.
+
 **Open:** how an edge links. The proposal is the device flow, which puts no
 password on the edge and revokes one edge at a time. It replaces the
 agent-account sign-in once the cloud serves it; the command-line client keeps
