@@ -15,7 +15,7 @@
           "label": "A step on the edge"
         },
         "security": {
-          "label": "A gate"
+          "label": "The cloud's gate, which sends"
         },
         "cloud": {
           "label": "A cloud run"
@@ -83,10 +83,9 @@
     "validate",
     "approve-apply",
     "gate",
-    "run-apply",
     "prepare-release",
     "approve-release",
-    "run-release"
+    "send-release"
   ],
   "nodes": [
     {
@@ -131,7 +130,7 @@
       "col": 3,
       "type": "backend",
       "label": "Run the apply",
-      "sublabel": "step by step, kept",
+      "sublabel": "asks for step i",
       "width": 150
     },
     {
@@ -149,7 +148,7 @@
       "col": 5,
       "type": "backend",
       "label": "Run the release",
-      "sublabel": "same gate",
+      "sublabel": "asks for step i",
       "width": 150
     },
     {
@@ -166,8 +165,8 @@
       "lane": "cloud",
       "col": 3,
       "type": "security",
-      "label": "Approval gate",
-      "sublabel": "this SHA approved?",
+      "label": "Send, if approved",
+      "sublabel": "step i, cloud's key",
       "tag": "no --force",
       "width": 150
     },
@@ -197,6 +196,15 @@
       "type": "external",
       "label": "Shopify, on sale",
       "sublabel": "ACTIVE, Online Store",
+      "width": 150
+    },
+    {
+      "id": "send-release",
+      "lane": "cloud",
+      "col": 5,
+      "type": "security",
+      "label": "Send, if approved",
+      "sublabel": "the same check",
       "width": 150
     }
   ],
@@ -237,27 +245,25 @@
       "variant": "security"
     },
     {
-      "id": "gate-run",
-      "from": "gate",
-      "to": "run-apply",
-      "label": "approved only",
-      "variant": "security"
+      "id": "run-gate",
+      "from": "run-apply",
+      "to": "gate",
+      "label": "send step i",
+      "variant": "emphasis"
     },
     {
-      "id": "run-shop",
-      "from": "run-apply",
+      "id": "gate-shop",
+      "from": "gate",
       "to": "shop-draft",
       "label": "contract writes",
       "variant": "emphasis",
-      "role": "branch",
-      "fromSide": "right",
-      "toSide": "top"
+      "role": "branch"
     },
     {
-      "id": "run-release-prep",
-      "from": "run-apply",
+      "id": "gate-outcome",
+      "from": "gate",
       "to": "prepare-release",
-      "label": "outcome"
+      "label": "outcomes kept"
     },
     {
       "id": "release-approve",
@@ -267,15 +273,22 @@
       "variant": "emphasis"
     },
     {
-      "id": "approve-run-release",
+      "id": "approve-send-release",
       "from": "approve-release",
-      "to": "run-release",
-      "label": "approved",
+      "to": "send-release",
+      "label": "approval recorded",
       "variant": "security"
     },
     {
-      "id": "release-shop",
+      "id": "run-send-release",
       "from": "run-release",
+      "to": "send-release",
+      "label": "send step i",
+      "variant": "emphasis"
+    },
+    {
+      "id": "release-shop",
+      "from": "send-release",
       "to": "shop-live",
       "label": "ACTIVE, publish",
       "variant": "emphasis",
@@ -289,24 +302,24 @@
       "items": [
         "The edge reads the picked products from Odoo, only by ids, never a write: their texts in every language, attributes, tags and prices from a chosen pricelist.",
         "It turns them into a plan of contract writes: setup, colour entries, a productSet per product (always DRAFT), then each product's translations.",
-        "ovs-dlab5-edge: extract.py, apply_plan.py, product_page.py"
+        "ovs-dlab5-edge: extract.py, apply_plan.py, execute.py"
       ]
     },
     {
       "dot": "rose",
-      "title": "The approval gate (ADR-0008)",
+      "title": "The gate sends (ADR-0008, ADR-0023)",
       "items": [
-        "The cloud checks every step against the write contract, sets forced values, and names the plan by the SHA-256 it computes itself. A person approves those counts and that digest.",
-        "A run asks the gate first. A plan that is not approved, or changed after approval, sends nothing. There is no --force.",
-        "ovs-dlab5-net: functions/execute/plan.ts, connections/writes.ts; ovs-dlab5-edge: execute.py"
+        "The cloud checks every step against the write contract, sets forced values, and names the plan by the SHA-256 it computes itself. A person approves those counts and that digest, on the site.",
+        "The edge then asks for step i, one at a time. The cloud sends it with the key it holds, only while the approval of that digest stands, and once. There is no --force, and the PC holds no key that could write.",
+        "ovs-dlab5-net: functions/execute/handler.ts, execute/plan.ts, runs/policy.ts"
       ]
     },
     {
       "dot": "emerald",
       "title": "Apply, then release",
       "items": [
-        "Steps go out in order. A reference to an entry or a product written earlier in the run (@mo:, @product:) is filled only from its stored outcome, never from the caller.",
-        "Every step's result is kept. A product written in the apply stays DRAFT until a release plan, approved the same way, makes it ACTIVE and puts it on the Online Store; an undo takes it off again.",
+        "A reference to an entry or a product written earlier in the run (@mo:, @product:) is filled only from the cloud's stored outcome, never from the caller.",
+        "A product written in the apply stays DRAFT until a release plan, approved the same way, makes it ACTIVE and puts it on the Online Store; an undo takes it off again.",
         "A product the store already had is left alone unless OVS wrote it or a person handed it over."
       ]
     }

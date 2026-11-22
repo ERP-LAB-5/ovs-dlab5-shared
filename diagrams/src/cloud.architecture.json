@@ -2,68 +2,405 @@
   "schema_version": 1,
   "diagram_type": "architecture",
   "meta": {
-    "title": "The cloud: one Amplify app per environment",
+    "title": "The cloud: proxy, gate and store, one Amplify app per environment",
     "output": "diagrams/cloud.html",
     "quality_profile": "showcase",
     "legend": {
       "mode": "auto",
       "entries": {
-        "frontend": { "label": "The site" },
-        "cloud": { "label": "The API" },
-        "backend": { "label": "A function" },
-        "database": { "label": "A store" },
-        "security": { "label": "Identity and secrets" },
-        "external": { "label": "Outside the cloud" }
+        "frontend": {
+          "label": "The site"
+        },
+        "cloud": {
+          "label": "The API"
+        },
+        "backend": {
+          "label": "A function"
+        },
+        "database": {
+          "label": "A store"
+        },
+        "security": {
+          "label": "Identity and secrets"
+        },
+        "external": {
+          "label": "Outside the cloud"
+        }
       }
     }
   },
   "components": [
-    { "id": "person", "type": "external", "label": "A person", "sublabel": "a browser", "pos": [40, 280], "size": [150, 60] },
-    { "id": "edge", "type": "external", "label": "An edge", "sublabel": "an agent account", "pos": [40, 470], "size": [150, 60] },
-    { "id": "site", "type": "frontend", "label": "Site", "sublabel": "Gatsby, Amplify Hosting", "pos": [260, 280], "size": [170, 60] },
-    { "id": "cognito", "type": "security", "label": "Cognito user pool", "sublabel": "invited users only", "pos": [260, 60], "size": [170, 60], "tag": "ovs-admins" },
-    { "id": "admin", "type": "backend", "label": "adminUsers", "sublabel": "users and groups", "pos": [500, 60], "size": [170, 60] },
-    { "id": "appsync", "type": "cloud", "label": "AppSync GraphQL", "sublabel": "user-pool tokens only", "pos": [500, 250], "size": [170, 150] },
-    { "id": "dynamodb", "type": "database", "label": "DynamoDB", "sublabel": "14 models", "pos": [500, 480], "size": [170, 60], "tag": "row per group" },
-    { "id": "proxy", "type": "backend", "label": "objectProxy", "sublabel": "group checked first", "pos": [760, 255], "size": [170, 60] },
-    { "id": "connections", "type": "backend", "label": "connections", "sublabel": "test, explain, discover", "pos": [760, 345], "size": [170, 60] },
-    { "id": "s3", "type": "database", "label": "S3 bucket", "sublabel": "workspaces/<slug>/", "pos": [1000, 255], "size": [170, 60] },
-    { "id": "secrets", "type": "security", "label": "Secrets Manager", "sublabel": "never returned", "pos": [1000, 345], "size": [170, 60] },
-    { "id": "systems", "type": "external", "label": "Odoo, Shopify", "sublabel": "never written to", "pos": [760, 640], "size": [170, 60] }
+    {
+      "id": "person",
+      "type": "external",
+      "label": "A person",
+      "sublabel": "a browser",
+      "pos": [
+        40,
+        280
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "edge",
+      "type": "external",
+      "label": "An edge",
+      "sublabel": "an organization's agent",
+      "pos": [
+        40,
+        470
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "site",
+      "type": "frontend",
+      "label": "Site",
+      "sublabel": "Gatsby, Amplify Hosting",
+      "pos": [
+        260,
+        280
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "cognito",
+      "type": "security",
+      "label": "Cognito user pool",
+      "sublabel": "invited users only",
+      "pos": [
+        260,
+        60
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "ovs-admins"
+    },
+    {
+      "id": "admin",
+      "type": "backend",
+      "label": "adminUsers",
+      "sublabel": "people, organizations",
+      "pos": [
+        500,
+        60
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "appsync",
+      "type": "cloud",
+      "label": "AppSync GraphQL",
+      "sublabel": "user-pool tokens only",
+      "pos": [
+        500,
+        250
+      ],
+      "size": [
+        170,
+        150
+      ]
+    },
+    {
+      "id": "dynamodb",
+      "type": "database",
+      "label": "DynamoDB",
+      "sublabel": "16 models",
+      "pos": [
+        500,
+        480
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "row per workspace group"
+    },
+    {
+      "id": "proxy",
+      "type": "backend",
+      "label": "objectProxy",
+      "sublabel": "group checked first",
+      "pos": [
+        760,
+        255
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "connections",
+      "type": "backend",
+      "label": "connections",
+      "sublabel": "test, read, lookup",
+      "pos": [
+        760,
+        345
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "s3",
+      "type": "database",
+      "label": "S3 bucket",
+      "sublabel": "workspaces/<slug>/",
+      "pos": [
+        1000,
+        255
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "secrets",
+      "type": "security",
+      "label": "Secrets Manager",
+      "sublabel": "never returned",
+      "pos": [
+        1000,
+        345
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "systems",
+      "type": "external",
+      "label": "Odoo, Shopify",
+      "sublabel": "read; written by execute only",
+      "pos": [
+        1000,
+        640
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "claude",
+      "type": "external",
+      "label": "claude.ai",
+      "sublabel": "a chat, as the person",
+      "pos": [
+        40,
+        120
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "mcp",
+      "type": "backend",
+      "label": "MCP server",
+      "sublabel": "the person's own token",
+      "pos": [
+        260,
+        170
+      ],
+      "size": [
+        170,
+        60
+      ]
+    },
+    {
+      "id": "execute",
+      "type": "backend",
+      "label": "execute",
+      "sublabel": "the one writer",
+      "pos": [
+        760,
+        435
+      ],
+      "size": [
+        170,
+        60
+      ]
+    }
   ],
   "boundaries": [
-    { "kind": "region", "label": "AWS: one Amplify app per environment, stage and prod", "wraps": ["site", "cognito", "admin", "appsync", "dynamodb", "proxy", "connections", "s3", "secrets"] }
+    {
+      "kind": "region",
+      "label": "AWS: one Amplify app per environment, stage and production",
+      "wraps": [
+        "site",
+        "cognito",
+        "admin",
+        "appsync",
+        "dynamodb",
+        "proxy",
+        "connections",
+        "s3",
+        "secrets",
+        "mcp",
+        "execute"
+      ]
+    }
   ],
   "connections": [
-    { "id": "person-site", "from": "person", "to": "site", "label": "HTTPS", "variant": "emphasis" },
-    { "id": "site-signin", "from": "site", "to": "cognito", "label": "sign in", "variant": "security" },
-    { "id": "site-api", "from": "site", "to": "appsync", "label": "ID token", "variant": "emphasis" },
-    { "id": "edge-api", "from": "edge", "to": "appsync", "label": "the same API" },
-    { "id": "api-admin", "from": "appsync", "to": "admin", "label": "admins only", "variant": "security" },
-    { "id": "admin-cognito", "from": "admin", "to": "cognito", "label": "manage" },
-    { "id": "api-models", "from": "appsync", "to": "dynamodb", "label": "rows" },
-    { "id": "api-proxy", "from": "appsync", "to": "proxy", "label": "objects", "variant": "emphasis" },
-    { "id": "proxy-s3", "from": "proxy", "to": "s3", "label": "confined keys", "variant": "emphasis" },
-    { "id": "api-connections", "from": "appsync", "to": "connections", "label": "connection" },
-    { "id": "connections-secret", "from": "connections", "to": "secrets", "label": "ovs/*", "variant": "security" },
-    { "id": "connections-read", "from": "connections", "to": "systems", "label": "read only", "variant": "security" }
+    {
+      "id": "person-site",
+      "from": "person",
+      "to": "site",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "site-signin",
+      "from": "site",
+      "to": "cognito",
+      "label": "sign in",
+      "variant": "security"
+    },
+    {
+      "id": "site-api",
+      "from": "site",
+      "to": "appsync",
+      "label": "ID token",
+      "variant": "emphasis"
+    },
+    {
+      "id": "edge-api",
+      "from": "edge",
+      "to": "appsync",
+      "label": "the same API"
+    },
+    {
+      "id": "api-admin",
+      "from": "appsync",
+      "to": "admin",
+      "label": "admins only",
+      "variant": "security"
+    },
+    {
+      "id": "admin-cognito",
+      "from": "admin",
+      "to": "cognito",
+      "label": "manage"
+    },
+    {
+      "id": "api-models",
+      "from": "appsync",
+      "to": "dynamodb",
+      "label": "rows"
+    },
+    {
+      "id": "api-proxy",
+      "from": "appsync",
+      "to": "proxy",
+      "label": "objects",
+      "variant": "emphasis"
+    },
+    {
+      "id": "proxy-s3",
+      "from": "proxy",
+      "to": "s3",
+      "label": "confined keys",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-connections",
+      "from": "appsync",
+      "to": "connections",
+      "label": "connection"
+    },
+    {
+      "id": "connections-secret",
+      "from": "connections",
+      "to": "secrets",
+      "label": "ovs/*",
+      "variant": "security"
+    },
+    {
+      "id": "connections-read",
+      "from": "connections",
+      "to": "systems",
+      "label": "read only",
+      "variant": "security"
+    },
+    {
+      "id": "claude-mcp",
+      "from": "claude",
+      "to": "mcp",
+      "label": "MCP, OAuth",
+      "variant": "emphasis"
+    },
+    {
+      "id": "mcp-signin",
+      "from": "mcp",
+      "to": "cognito",
+      "label": "sign in",
+      "variant": "security"
+    },
+    {
+      "id": "mcp-api",
+      "from": "mcp",
+      "to": "appsync",
+      "label": "as the person"
+    },
+    {
+      "id": "api-execute",
+      "from": "appsync",
+      "to": "execute",
+      "label": "approved steps",
+      "variant": "security"
+    },
+    {
+      "id": "execute-secret",
+      "from": "execute",
+      "to": "secrets",
+      "label": "ovs/*",
+      "variant": "security"
+    },
+    {
+      "id": "execute-write",
+      "from": "execute",
+      "to": "systems",
+      "label": "contract writes",
+      "variant": "emphasis"
+    }
   ],
   "cards": [
     {
       "dot": "rose",
       "title": "Who gets in",
       "items": [
-        "Users are created by an admin only; nobody signs up: backend.ts (allowAdminCreateUserOnly), auth/resource.ts, which also sends the invitation through its customMessage trigger.",
-        "ovs-admins is the one declared group; each workspace has its own group, granted separately.",
-        "An edge signs in with its own app client and an agent account, then calls the same API: backend.ts (EdgeAppClient)."
+        "Users are created by an admin only; nobody signs up: backend.ts (allowAdminCreateUserOnly), auth/resource.ts.",
+        "An organization (a t-… group of admins) holds workspaces, each with its own ovs-<slug> group; its shared workspace is read by every member (ADR-0024). adminUsers is the one writer of organizations, workspaces and their groups.",
+        "An edge signs in with its own app client as its organization's agent; claude.ai through the MCP server, as the person, with the ovs-claude client (ADR-0025). Neither can approve or accept."
       ]
     },
     {
       "dot": "cyan",
       "title": "Rows",
       "items": [
-        "14 models, among them Workspace, Ontology, MappingAxiom, Decision, Issue, Activity, Connection and Artifact: data/resource.ts.",
-        "Every row names its workspace's group; members of that group and ovs-admins may reach it. Workspace, Ontology, MappingAxiom and Finding are read-only for members."
+        "16 models, among them Tenant, Workspace, Story, Decision, Issue, Activity, Connection, LifecycleRun and Artifact: data/resource.ts.",
+        "Every row names its workspace's group; members of that group and ovs-admins may reach it. An approval and a story's acceptance are read-only fields only the run function sets."
       ]
     },
     {
@@ -71,15 +408,15 @@
       "title": "Objects",
       "items": [
         "workspaces/* in the bucket is open to ovs-admins only: storage/resource.ts. Members go through objectProxy, which checks the workspace's group before it touches a key: functions/objectProxy/handler.ts.",
-        "A presigned upload is bound to its SHA-256 and a snapshot is write-once; only a merged A-Box may be deleted: functions/shared/uploadPolicy.ts."
+        "A presigned upload is bound to its SHA-256 and a snapshot is write-once; nothing is deleted through the proxy: functions/shared/uploadPolicy.ts."
       ]
     },
     {
       "dot": "amber",
-      "title": "Connections",
+      "title": "Proxy and gate",
       "items": [
-        "The connections function keeps a connection's secret in Secrets Manager and checks membership itself: functions/connections/handler.ts.",
-        "Discovery now runs on the edge (ADR-0016); this path stays until it is retired. All paths are in ovs-dlab5-net, under backend/amplify/."
+        "connections keeps each key in Secrets Manager and only reads: it tests a key and reads Odoo and Shopify for an edge that holds none (ADR-0022).",
+        "execute is the one writer to Shopify: it checks a plan, names it by its SHA-256 and sends step i only while a person's approval stands (ADR-0023). All paths are in ovs-dlab5-net, under backend/amplify/."
       ]
     }
   ]
