@@ -5013,16 +5013,16 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Swimlanes -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="886" height="106" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="842" height="106" rx="10" class="c-lane" stroke-width="1"/>
         <text x="54" y="74" class="t-dim" font-size="10" font-weight="600">01 / You</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="178" width="886" height="106" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="178" width="842" height="106" rx="10" class="c-lane" stroke-width="1"/>
         <text x="54" y="200" class="t-dim" font-size="10" font-weight="600">02 / The edge, on this PC</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-2" x="40" y="304" width="886" height="106" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-2" x="40" y="304" width="842" height="106" rx="10" class="c-lane" stroke-width="1"/>
         <text x="54" y="326" class="t-dim" font-size="10" font-weight="600">03 / The cloud workspace</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-3" x="40" y="430" width="886" height="106" rx="10" class="c-lane" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-3" x="40" y="430" width="842" height="106" rx="10" class="c-lane" stroke-width="1"/>
         <text x="54" y="452" class="t-dim" font-size="10" font-weight="600">04 / Odoo and Shopify</text>
 
         <!-- Phase headers -->
@@ -5035,25 +5035,26 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <line x1="437" y1="35" x2="529" y2="35" class="a-emphasis" stroke-width="1.1"/>
         <rect x="437" y="27" width="92" height="16" rx="4" class="c-mask"/>
         <text x="483" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">Apply, in DRAFT</text>
-        <line x1="638.6" y1="35" x2="888.6" y2="35" class="a-dashed" stroke-width="1.1"/>
-        <rect x="638.6" y="27" width="250" height="16" rx="4" class="c-mask"/>
-        <text x="763.6" y="39" class="t-messagebus" font-size="8" font-weight="600" text-anchor="middle">Release</text>
+        <line x1="595" y1="35" x2="845" y2="35" class="a-dashed" stroke-width="1.1"/>
+        <rect x="595" y="27" width="250" height="16" rx="4" class="c-mask"/>
+        <text x="720" y="39" class="t-messagebus" font-size="8" font-weight="600" text-anchor="middle">Release</text>
 
         <!-- Workflow groups -->
 
 
         <!-- Edge paths -->
         <path data-edge-from="approve-apply" data-edge-to="gate" data-edge-label="approval recorded" data-edge-key="0" data-edge-id="approve-gate" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="363,146;363,426;483,426;483,406" d="M 363 146 L 363 426 L 483 426 L 483 406" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="approve-release" data-edge-to="run-release" data-edge-label="approved" data-edge-key="1" data-edge-id="approve-run-release" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="759.6,120;842.6,120;842.6,220" d="M 759.6 120 L 842.6 120 L 842.6 220" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="gate" data-edge-to="run-apply" data-edge-label="approved only" data-edge-key="2" data-edge-id="gate-run" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="483,338;483,272" d="M 483 338 L 483 272" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="pick" data-edge-to="prepare" data-edge-label="prepare" data-edge-key="3" data-edge-id="pick-prepare" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="198,120;243,120;243,220" d="M 198 120 L 243 120 L 243 220" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="prepare" data-edge-to="odoo" data-edge-label="read by ids" data-edge-key="4" data-edge-id="prepare-odoo" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="168,253;20,253;20,498;48,498" d="M 168 253 L 20 253 L 20 498 L 48 498" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="prepare" data-edge-to="validate" data-edge-label="propose plan" data-edge-key="5" data-edge-id="prepare-validate" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="243,272;243,346" d="M 243 272 L 243 346" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="prepare-release" data-edge-to="approve-release" data-edge-label="new plan, SHA" data-edge-key="6" data-edge-id="release-approve" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="684.6,220;684.6,146" d="M 684.6 220 L 684.6 146" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="run-release" data-edge-to="shop-live" data-edge-label="ACTIVE, publish" data-edge-key="7" data-edge-id="release-shop" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="842.6,272;842.6,472" d="M 842.6 272 L 842.6 472" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="run-apply" data-edge-to="prepare-release" data-edge-label="outcome" data-edge-key="8" data-edge-id="run-release-prep" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="558,246;609.6,246" d="M 558 246 L 609.6 246" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="run-apply" data-edge-to="shop-draft" data-edge-label="contract writes" data-edge-key="9" data-edge-id="run-shop" data-edge-role="branch" data-composition-points="558,253;574,253;574,357;684.6,357;684.6,472" d="M 558 253 L 574 253 L 574 357 L 684.6 357 L 684.6 472" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="validate" data-edge-to="approve-apply" data-edge-label="counts, SHA" data-edge-key="10" data-edge-id="validate-approve" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="243,398;243,426;351,426;351,146" d="M 243 398 L 243 426 L 351 426 L 351 146" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="approve-release" data-edge-to="send-release" data-edge-label="approval recorded" data-edge-key="1" data-edge-id="approve-send-release" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="641,94;641,78;720,78;720,414;799,414;799,398" d="M 641 94 L 641 78 L 720 78 L 720 414 L 799 414 L 799 398" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="gate" data-edge-to="prepare-release" data-edge-label="outcomes kept" data-edge-key="2" data-edge-id="gate-outcome" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="558,372;641,372;641,272" d="M 558 372 L 641 372 L 641 272" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="gate" data-edge-to="shop-draft" data-edge-label="contract writes" data-edge-key="3" data-edge-id="gate-shop" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="495,406;495,552;641,552;641,524" d="M 495 406 L 495 552 L 641 552 L 641 524" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="pick" data-edge-to="prepare" data-edge-label="prepare" data-edge-key="4" data-edge-id="pick-prepare" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="198,120;243,120;243,220" d="M 198 120 L 243 120 L 243 220" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="prepare" data-edge-to="odoo" data-edge-label="read by ids" data-edge-key="5" data-edge-id="prepare-odoo" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="168,253;20,253;20,498;48,498" d="M 168 253 L 20 253 L 20 498 L 48 498" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="prepare" data-edge-to="validate" data-edge-label="propose plan" data-edge-key="6" data-edge-id="prepare-validate" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="243,272;243,346" d="M 243 272 L 243 346" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="prepare-release" data-edge-to="approve-release" data-edge-label="new plan, SHA" data-edge-key="7" data-edge-id="release-approve" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="641,220;641,146" d="M 641 220 L 641 146" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="send-release" data-edge-to="shop-live" data-edge-label="ACTIVE, publish" data-edge-key="8" data-edge-id="release-shop" data-composition-routing="workflow-v2-auto" data-edge-role="branch" data-composition-points="874,372;952,372;952,498;874,498" d="M 874 372 L 952 372 L 952 498 L 874 498" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="run-apply" data-edge-to="gate" data-edge-label="send step i" data-edge-key="9" data-edge-id="run-gate" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="483,272;483,338" d="M 483 272 L 483 338" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="run-release" data-edge-to="send-release" data-edge-label="send step i" data-edge-key="10" data-edge-id="run-send-release" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="874,246;890,246;890,294;799,294;799,346" d="M 874 246 L 890 246 L 890 294 L 799 294 L 799 346" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="validate" data-edge-to="approve-apply" data-edge-label="counts, SHA" data-edge-key="11" data-edge-id="validate-approve" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="243,398;243,426;351,426;351,146" d="M 243 398 L 243 426 L 351 426 L 351 146" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
 
         <!-- Nodes -->
         <g id="node-pick" data-node-id="pick" data-node-label="Pick products" tabindex="0" role="button" aria-label="Focus Pick products, pricelist, images, type, You › Plan" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="pricelist, images, type" data-node-context="You › Plan">
@@ -5086,16 +5087,16 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
         <g id="node-approve-release" data-node-id="approve-release" data-node-label="Approve release" tabindex="0" role="button" aria-label="Focus Approve release, a second plan, You › Release" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="a second plan" data-node-context="You › Release">
           <title>Approve release · a second plan · You › Release</title>
-          <rect x="609.6" y="94" width="150" height="52" rx="6" class="c-mask"/>
-          <rect x="609.6" y="94" width="150" height="52" rx="6" class="c-frontend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(615.6 100) scale(0.6875)">
+          <rect x="566" y="94" width="150" height="52" rx="6" class="c-mask"/>
+          <rect x="566" y="94" width="150" height="52" rx="6" class="c-frontend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(572 100) scale(0.6875)">
             <rect x="2" y="3" width="12" height="10" rx="2"/>
             <path d="M2 6.5h12"/>
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="684.6" y="115" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Approve release</text>
-          <text data-detail="context" x="684.6" y="132" class="t-muted" font-size="8" text-anchor="middle">a second plan</text>
+          <text data-node-label="" data-detail-anchor="" x="641" y="115" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Approve release</text>
+          <text data-detail="context" x="641" y="132" class="t-muted" font-size="8" text-anchor="middle">a second plan</text>
         </g>
 
         <g id="node-prepare" data-node-id="prepare" data-node-label="Prepare" tabindex="0" role="button" aria-label="Focus Prepare, extract, then plan, The edge, on this PC › Plan" aria-pressed="false" data-node-kind="backend" data-node-sublabel="extract, then plan" data-node-context="The edge, on this PC › Plan">
@@ -5109,37 +5110,37 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <text data-detail="context" x="243" y="258" class="t-muted" font-size="8" text-anchor="middle">extract, then plan</text>
         </g>
 
-        <g id="node-run-apply" data-node-id="run-apply" data-node-label="Run the apply" tabindex="0" role="button" aria-label="Focus Run the apply, step by step, kept, The edge, on this PC › Apply, in DRAFT" aria-pressed="false" data-node-kind="backend" data-node-sublabel="step by step, kept" data-node-context="The edge, on this PC › Apply, in DRAFT">
-          <title>Run the apply · step by step, kept · The edge, on this PC › Apply, in DRAFT</title>
+        <g id="node-run-apply" data-node-id="run-apply" data-node-label="Run the apply" tabindex="0" role="button" aria-label="Focus Run the apply, asks for step i, The edge, on this PC › Apply, in DRAFT" aria-pressed="false" data-node-kind="backend" data-node-sublabel="asks for step i" data-node-context="The edge, on this PC › Apply, in DRAFT">
+          <title>Run the apply · asks for step i · The edge, on this PC › Apply, in DRAFT</title>
           <rect x="408" y="220" width="150" height="52" rx="6" class="c-mask"/>
           <rect x="408" y="220" width="150" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(414 226) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="483" y="241" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Run the apply</text>
-          <text data-detail="context" x="483" y="258" class="t-muted" font-size="8" text-anchor="middle">step by step, kept</text>
+          <text data-detail="context" x="483" y="258" class="t-muted" font-size="8" text-anchor="middle">asks for step i</text>
         </g>
 
         <g id="node-prepare-release" data-node-id="prepare-release" data-node-label="Prepare release" tabindex="0" role="button" aria-label="Focus Prepare release, from what was written, The edge, on this PC › Release" aria-pressed="false" data-node-kind="backend" data-node-sublabel="from what was written" data-node-context="The edge, on this PC › Release">
           <title>Prepare release · from what was written · The edge, on this PC › Release</title>
-          <rect x="609.6" y="220" width="150" height="52" rx="6" class="c-mask"/>
-          <rect x="609.6" y="220" width="150" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(615.6 226) scale(0.6875)">
+          <rect x="566" y="220" width="150" height="52" rx="6" class="c-mask"/>
+          <rect x="566" y="220" width="150" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(572 226) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="684.6" y="241" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Prepare release</text>
-          <text data-detail="context" x="684.6" y="258" class="t-muted" font-size="8" text-anchor="middle">from what was written</text>
+          <text data-node-label="" data-detail-anchor="" x="641" y="241" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Prepare release</text>
+          <text data-detail="context" x="641" y="258" class="t-muted" font-size="8" text-anchor="middle">from what was written</text>
         </g>
 
-        <g id="node-run-release" data-node-id="run-release" data-node-label="Run the release" tabindex="0" role="button" aria-label="Focus Run the release, same gate, The edge, on this PC › Release" aria-pressed="false" data-node-kind="backend" data-node-sublabel="same gate" data-node-context="The edge, on this PC › Release">
-          <title>Run the release · same gate · The edge, on this PC › Release</title>
-          <rect x="767.6" y="220" width="150" height="52" rx="6" class="c-mask"/>
-          <rect x="767.6" y="220" width="150" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(773.6 226) scale(0.6875)">
+        <g id="node-run-release" data-node-id="run-release" data-node-label="Run the release" tabindex="0" role="button" aria-label="Focus Run the release, asks for step i, The edge, on this PC › Release" aria-pressed="false" data-node-kind="backend" data-node-sublabel="asks for step i" data-node-context="The edge, on this PC › Release">
+          <title>Run the release · asks for step i · The edge, on this PC › Release</title>
+          <rect x="724" y="220" width="150" height="52" rx="6" class="c-mask"/>
+          <rect x="724" y="220" width="150" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(730 226) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="842.6" y="241" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Run the release</text>
-          <text data-detail="context" x="842.6" y="258" class="t-muted" font-size="8" text-anchor="middle">same gate</text>
+          <text data-node-label="" data-detail-anchor="" x="799" y="241" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Run the release</text>
+          <text data-detail="context" x="799" y="258" class="t-muted" font-size="8" text-anchor="middle">asks for step i</text>
         </g>
 
         <g id="node-validate" data-node-id="validate" data-node-label="Validate run" tabindex="0" role="button" aria-label="Focus Validate run, plan checked, named, The cloud workspace › Plan" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="plan checked, named" data-node-context="The cloud workspace › Plan">
@@ -5153,17 +5154,29 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <text data-detail="context" x="243" y="384" class="t-muted" font-size="8" text-anchor="middle">plan checked, named</text>
         </g>
 
-        <g id="node-gate" data-node-id="gate" data-node-label="Approval gate" tabindex="0" role="button" aria-label="Focus Approval gate, this SHA approved?, The cloud workspace › Apply, in DRAFT" aria-pressed="false" data-node-kind="security" data-node-sublabel="this SHA approved?" data-node-tag="no --force" data-node-context="The cloud workspace › Apply, in DRAFT">
-          <title>Approval gate · this SHA approved? · The cloud workspace › Apply, in DRAFT · no --force</title>
+        <g id="node-gate" data-node-id="gate" data-node-label="Send, if approved" tabindex="0" role="button" aria-label="Focus Send, if approved, step i, cloud&#39;s key, The cloud workspace › Apply, in DRAFT" aria-pressed="false" data-node-kind="security" data-node-sublabel="step i, cloud&#39;s key" data-node-tag="no --force" data-node-context="The cloud workspace › Apply, in DRAFT">
+          <title>Send, if approved · step i, cloud&#39;s key · The cloud workspace › Apply, in DRAFT · no --force</title>
           <rect x="408" y="338" width="150" height="68" rx="6" class="c-mask"/>
           <rect x="408" y="338" width="150" height="68" rx="6" class="c-security" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(414 344) scale(0.6875)">
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="483" y="359" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Approval gate</text>
-          <text data-detail="context" x="483" y="376" class="t-muted" font-size="8" text-anchor="middle">this SHA approved?</text>
+          <text data-node-label="" data-detail-anchor="" x="483.1" y="359" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Send, if approved</text>
+          <text data-detail="context" x="483" y="376" class="t-muted" font-size="8" text-anchor="middle">step i, cloud&#39;s key</text>
         <text data-detail="fine" x="483" y="394" class="t-security" font-size="7" text-anchor="middle">no --force</text>
+        </g>
+
+        <g id="node-send-release" data-node-id="send-release" data-node-label="Send, if approved" tabindex="0" role="button" aria-label="Focus Send, if approved, the same check, The cloud workspace › Release" aria-pressed="false" data-node-kind="security" data-node-sublabel="the same check" data-node-context="The cloud workspace › Release">
+          <title>Send, if approved · the same check · The cloud workspace › Release</title>
+          <rect x="724" y="346" width="150" height="52" rx="6" class="c-mask"/>
+          <rect x="724" y="346" width="150" height="52" rx="6" class="c-security" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(730 352) scale(0.6875)">
+            <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
+            <path d="m5.8 8 1.5 1.5 3-3"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="799.1" y="367" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Send, if approved</text>
+          <text data-detail="context" x="799" y="384" class="t-muted" font-size="8" text-anchor="middle">the same check</text>
         </g>
 
         <g id="node-odoo" data-node-id="odoo" data-node-label="Odoo" tabindex="0" role="button" aria-label="Focus Odoo, never written to, Odoo and Shopify › Plan" aria-pressed="false" data-node-kind="external" data-node-sublabel="never written to" data-node-tag="read only" data-node-context="Odoo and Shopify › Plan">
@@ -5181,26 +5194,26 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
         <g id="node-shop-draft" data-node-id="shop-draft" data-node-label="Shopify, DRAFT" tabindex="0" role="button" aria-label="Focus Shopify, DRAFT, products, translations, Odoo and Shopify › Release" aria-pressed="false" data-node-kind="external" data-node-sublabel="products, translations" data-node-context="Odoo and Shopify › Release">
           <title>Shopify, DRAFT · products, translations · Odoo and Shopify › Release</title>
-          <rect x="609.6" y="472" width="150" height="52" rx="6" class="c-mask"/>
-          <rect x="609.6" y="472" width="150" height="52" rx="6" class="c-external" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(615.6 478) scale(0.6875)">
+          <rect x="566" y="472" width="150" height="52" rx="6" class="c-mask"/>
+          <rect x="566" y="472" width="150" height="52" rx="6" class="c-external" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(572 478) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="684.6" y="493" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Shopify, DRAFT</text>
-          <text data-detail="context" x="684.6" y="510" class="t-muted" font-size="8" text-anchor="middle">products, translations</text>
+          <text data-node-label="" data-detail-anchor="" x="641" y="493" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Shopify, DRAFT</text>
+          <text data-detail="context" x="641" y="510" class="t-muted" font-size="8" text-anchor="middle">products, translations</text>
         </g>
 
         <g id="node-shop-live" data-node-id="shop-live" data-node-label="Shopify, on sale" tabindex="0" role="button" aria-label="Focus Shopify, on sale, ACTIVE, Online Store, Odoo and Shopify › Release" aria-pressed="false" data-node-kind="external" data-node-sublabel="ACTIVE, Online Store" data-node-context="Odoo and Shopify › Release">
           <title>Shopify, on sale · ACTIVE, Online Store · Odoo and Shopify › Release</title>
-          <rect x="767.6" y="472" width="150" height="52" rx="6" class="c-mask"/>
-          <rect x="767.6" y="472" width="150" height="52" rx="6" class="c-external" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(773.6 478) scale(0.6875)">
+          <rect x="724" y="472" width="150" height="52" rx="6" class="c-mask"/>
+          <rect x="724" y="472" width="150" height="52" rx="6" class="c-external" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(730 478) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="842.6" y="493" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Shopify, on sale</text>
-          <text data-detail="context" x="842.6" y="510" class="t-muted" font-size="8" text-anchor="middle">ACTIVE, Online Store</text>
+          <text data-node-label="" data-detail-anchor="" x="799" y="493" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Shopify, on sale</text>
+          <text data-detail="context" x="799" y="510" class="t-muted" font-size="8" text-anchor="middle">ACTIVE, Online Store</text>
         </g>
 
         <!-- Edge labels -->
@@ -5208,43 +5221,47 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <rect x="377.2" y="406" width="91.6" height="14" rx="3" class="c-mask"/>
           <text x="423" y="416" class="t-edge-security" font-size="8" text-anchor="middle">approval recorded</text>
         </g>
-        <g data-detail="context" data-edge-from="approve-release" data-edge-to="run-release" data-edge-label="approved" data-edge-key="1" data-edge-id="approve-run-release">
-          <rect x="776.9" y="100" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="801.1" y="110" class="t-edge-security" font-size="8" text-anchor="middle">approved</text>
+        <g data-detail="context" data-edge-from="approve-release" data-edge-to="send-release" data-edge-label="approval recorded" data-edge-key="1" data-edge-id="approve-send-release">
+          <rect x="634.7" y="58" width="91.6" height="14" rx="3" class="c-mask"/>
+          <text x="680.5" y="68" class="t-edge-security" font-size="8" text-anchor="middle">approval recorded</text>
         </g>
-        <g data-detail="context" data-edge-from="gate" data-edge-to="run-apply" data-edge-label="approved only" data-edge-key="2" data-edge-id="gate-run">
-          <rect x="446.8" y="295" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="483" y="305" class="t-edge-security" font-size="8" text-anchor="middle">approved only</text>
+        <g data-detail="context" data-edge-from="gate" data-edge-to="prepare-release" data-edge-label="outcomes kept" data-edge-key="2" data-edge-id="gate-outcome">
+          <rect x="563.3" y="352" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="599.5" y="362" class="t-edge-default" font-size="8" text-anchor="middle">outcomes kept</text>
         </g>
-        <g data-detail="context" data-edge-from="pick" data-edge-to="prepare" data-edge-label="prepare" data-edge-key="3" data-edge-id="pick-prepare">
+        <g data-detail="context" data-edge-from="gate" data-edge-to="shop-draft" data-edge-label="contract writes" data-edge-key="3" data-edge-id="gate-shop">
+          <rect x="527" y="532" width="82" height="14" rx="3" class="c-mask"/>
+          <text x="568" y="542" class="t-edge-emphasis" font-size="8" text-anchor="middle">contract writes</text>
+        </g>
+        <g data-detail="context" data-edge-from="pick" data-edge-to="prepare" data-edge-label="prepare" data-edge-key="4" data-edge-id="pick-prepare">
           <rect x="198.7" y="100" width="43.6" height="14" rx="3" class="c-mask"/>
           <text x="220.5" y="110" class="t-edge-emphasis" font-size="8" text-anchor="middle">prepare</text>
         </g>
-        <g data-detail="context" data-edge-from="prepare" data-edge-to="odoo" data-edge-label="read by ids" data-edge-key="4" data-edge-id="prepare-odoo">
+        <g data-detail="context" data-edge-from="prepare" data-edge-to="odoo" data-edge-label="read by ids" data-edge-key="5" data-edge-id="prepare-odoo">
           <rect x="62.6" y="233" width="62.8" height="14" rx="3" class="c-mask"/>
           <text x="94" y="243" class="t-edge-security" font-size="8" text-anchor="middle">read by ids</text>
         </g>
-        <g data-detail="context" data-edge-from="prepare" data-edge-to="validate" data-edge-label="propose plan" data-edge-key="5" data-edge-id="prepare-validate">
+        <g data-detail="context" data-edge-from="prepare" data-edge-to="validate" data-edge-label="propose plan" data-edge-key="6" data-edge-id="prepare-validate">
           <rect x="209.2" y="299" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="243" y="309" class="t-edge-default" font-size="8" text-anchor="middle">propose plan</text>
         </g>
-        <g data-detail="context" data-edge-from="prepare-release" data-edge-to="approve-release" data-edge-label="new plan, SHA" data-edge-key="6" data-edge-id="release-approve">
-          <rect x="648.4" y="173" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="684.6" y="183" class="t-edge-emphasis" font-size="8" text-anchor="middle">new plan, SHA</text>
+        <g data-detail="context" data-edge-from="prepare-release" data-edge-to="approve-release" data-edge-label="new plan, SHA" data-edge-key="7" data-edge-id="release-approve">
+          <rect x="604.8" y="173" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="641" y="183" class="t-edge-emphasis" font-size="8" text-anchor="middle">new plan, SHA</text>
         </g>
-        <g data-detail="context" data-edge-from="run-release" data-edge-to="shop-live" data-edge-label="ACTIVE, publish" data-edge-key="7" data-edge-id="release-shop">
-          <rect x="801.6" y="362" width="82" height="14" rx="3" class="c-mask"/>
-          <text x="842.6" y="372" class="t-edge-emphasis" font-size="8" text-anchor="middle">ACTIVE, publish</text>
+        <g data-detail="context" data-edge-from="send-release" data-edge-to="shop-live" data-edge-label="ACTIVE, publish" data-edge-key="8" data-edge-id="release-shop">
+          <rect x="872" y="352" width="82" height="14" rx="3" class="c-mask"/>
+          <text x="913" y="362" class="t-edge-emphasis" font-size="8" text-anchor="middle">ACTIVE, publish</text>
         </g>
-        <g data-detail="context" data-edge-from="run-apply" data-edge-to="prepare-release" data-edge-label="outcome" data-edge-key="8" data-edge-id="run-release-prep">
-          <rect x="562" y="226" width="43.6" height="14" rx="3" class="c-mask"/>
-          <text x="583.8" y="236" class="t-edge-default" font-size="8" text-anchor="middle">outcome</text>
+        <g data-detail="context" data-edge-from="run-apply" data-edge-to="gate" data-edge-label="send step i" data-edge-key="9" data-edge-id="run-gate">
+          <rect x="451.6" y="295" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="483" y="305" class="t-edge-emphasis" font-size="8" text-anchor="middle">send step i</text>
         </g>
-        <g data-detail="context" data-edge-from="run-apply" data-edge-to="shop-draft" data-edge-label="contract writes" data-edge-key="9" data-edge-id="run-shop">
-          <rect x="588.3" y="337" width="82" height="14" rx="3" class="c-mask"/>
-          <text x="629.3" y="347" class="t-edge-emphasis" font-size="8" text-anchor="middle">contract writes</text>
+        <g data-detail="context" data-edge-from="run-release" data-edge-to="send-release" data-edge-label="send step i" data-edge-key="10" data-edge-id="run-send-release">
+          <rect x="813.1" y="274" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="844.5" y="284" class="t-edge-emphasis" font-size="8" text-anchor="middle">send step i</text>
         </g>
-        <g data-detail="context" data-edge-from="validate" data-edge-to="approve-apply" data-edge-label="counts, SHA" data-edge-key="10" data-edge-id="validate-approve">
+        <g data-detail="context" data-edge-from="validate" data-edge-to="approve-apply" data-edge-label="counts, SHA" data-edge-key="11" data-edge-id="validate-approve">
           <rect x="265.6" y="406" width="62.8" height="14" rx="3" class="c-mask"/>
           <text x="297" y="416" class="t-edge-emphasis" font-size="8" text-anchor="middle">counts, SHA</text>
         </g>
@@ -5260,17 +5277,17 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <rect x="140" y="572" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
             <text x="162" y="580" class="t-muted" font-size="7.5" font-weight="500">A step on the edge</text>
           </g>
-          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="A gate" data-legend-x="269" data-legend-baseline="580" data-legend-width="70">
+          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="The cloud&#39;s gate, which sends" data-legend-x="269" data-legend-baseline="580" data-legend-width="169">
             <rect x="269" y="572" width="14" height="9" rx="2" class="c-security" stroke-width="1"/>
-            <text x="291" y="580" class="t-muted" font-size="7.5" font-weight="500">A gate</text>
+            <text x="291" y="580" class="t-muted" font-size="7.5" font-weight="500">The cloud&#39;s gate, which sends</text>
           </g>
-          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="A cloud run" data-legend-x="346" data-legend-baseline="580" data-legend-width="91">
-            <rect x="346" y="572" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
-            <text x="368" y="580" class="t-muted" font-size="7.5" font-weight="500">A cloud run</text>
+          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="A cloud run" data-legend-x="445" data-legend-baseline="580" data-legend-width="91">
+            <rect x="445" y="572" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
+            <text x="467" y="580" class="t-muted" font-size="7.5" font-weight="500">A cloud run</text>
           </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="A source or target system" data-legend-x="444" data-legend-baseline="580" data-legend-width="152">
-            <rect x="444" y="572" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-            <text x="466" y="580" class="t-muted" font-size="7.5" font-weight="500">A source or target system</text>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="A source or target system" data-legend-x="543" data-legend-baseline="580" data-legend-width="152">
+            <rect x="543" y="572" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
+            <text x="565" y="580" class="t-muted" font-size="7.5" font-weight="500">A source or target system</text>
           </g>
         </g>
       </svg>
@@ -5457,19 +5474,19 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <ul>
           <li>The edge reads the picked products from Odoo, only by ids, never a write: their texts in every language, attributes, tags and prices from a chosen pricelist.</li>
           <li>It turns them into a plan of contract writes: setup, colour entries, a productSet per product (always DRAFT), then each product&#39;s translations.</li>
-          <li>ovs-dlab5-edge: extract.py, apply_plan.py, product_page.py</li>
+          <li>ovs-dlab5-edge: extract.py, apply_plan.py, execute.py</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>The approval gate (ADR-0008)</h3>
+          <h3>The gate sends (ADR-0008, ADR-0023)</h3>
         </div>
         <ul>
-          <li>The cloud checks every step against the write contract, sets forced values, and names the plan by the SHA-256 it computes itself. A person approves those counts and that digest.</li>
-          <li>A run asks the gate first. A plan that is not approved, or changed after approval, sends nothing. There is no --force.</li>
-          <li>ovs-dlab5-net: functions/execute/plan.ts, connections/writes.ts; ovs-dlab5-edge: execute.py</li>
+          <li>The cloud checks every step against the write contract, sets forced values, and names the plan by the SHA-256 it computes itself. A person approves those counts and that digest, on the site.</li>
+          <li>The edge then asks for step i, one at a time. The cloud sends it with the key it holds, only while the approval of that digest stands, and once. There is no --force, and the PC holds no key that could write.</li>
+          <li>ovs-dlab5-net: functions/execute/handler.ts, execute/plan.ts, runs/policy.ts</li>
         </ul>
       </div>
 
@@ -5479,8 +5496,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <h3>Apply, then release</h3>
         </div>
         <ul>
-          <li>Steps go out in order. A reference to an entry or a product written earlier in the run (@mo:, @product:) is filled only from its stored outcome, never from the caller.</li>
-          <li>Every step&#39;s result is kept. A product written in the apply stays DRAFT until a release plan, approved the same way, makes it ACTIVE and puts it on the Online Store; an undo takes it off again.</li>
+          <li>A reference to an entry or a product written earlier in the run (@mo:, @product:) is filled only from the cloud&#39;s stored outcome, never from the caller.</li>
+          <li>A product written in the apply stays DRAFT until a release plan, approved the same way, makes it ACTIVE and puts it on the Online Store; an undo takes it off again.</li>
           <li>A product the store already had is left alone unless OVS wrote it or a person handed it over.</li>
         </ul>
       </div>

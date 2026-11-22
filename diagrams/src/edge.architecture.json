@@ -106,7 +106,7 @@
       "id": "systems",
       "type": "external",
       "label": "Odoo, Shopify",
-      "sublabel": "never written to",
+      "sublabel": "never written from this PC",
       "pos": [
         500,
         780
@@ -162,7 +162,7 @@
       "id": "cloud",
       "type": "cloud",
       "label": "Cloud workspace",
-      "sublabel": "AppSync, S3, as the edge's account",
+      "sublabel": "the organization's workspaces",
       "pos": [
         1000,
         240
@@ -304,7 +304,8 @@
       "dot": "slate",
       "title": "Where it is",
       "items": [
-        "All paths are in ovs-dlab5-edge, under ovs_dlab5_edge/. ADR-0016 (discovery on the edge) and ADR-0018 (capabilities)."
+        "All paths are in ovs-dlab5-edge, under ovs_dlab5_edge/. ADR-0016 (discovery on the edge) and ADR-0018 (capabilities).",
+        "An edge links as its organization's agent and works in the organization's shared workspace (ADR-0024). It plans a migration, and the cloud sends every write to Shopify after a person approves it (ADR-0023); a sync also brings the organization's stories, which the Scenarios map draws."
       ]
     }
   ]
