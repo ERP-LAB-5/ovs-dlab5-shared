@@ -26,6 +26,8 @@ gallery card's text.
 
 - [The cloud: proxy, gate and store](../diagrams/cloud.html): Who gets in (invited people in organizations, an edge as its organization's agent, claude.ai through the MCP server as the person), how a request reaches its rows and its objects behind the proxy's group check, and the one function that writes to Shopify.
 
+- [The cloud's data and flows](../diagrams/cloud-data.html): How a person, claude.ai and the edge reach the cloud's rows: through the site, the MCP server and AppSync, then the function that gates each kind of write (loops, runs, execute, connections, objectProxy, adminUsers), the data model they write (organizations, the loop and its stories, runs, talk, secrets, the workspace object), and what leaves the cloud: Shopify writes, Odoo reads and the team channel.
+
 ## Edge
 
 - [The edge: what runs on this PC](../diagrams/edge.html): The page, the chat that only proposes, discovery with its credential store, the work directory, and what goes to the cloud workspace and how.

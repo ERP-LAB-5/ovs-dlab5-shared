@@ -1,0 +1,516 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "The cloud's data and flows: from a person, claude.ai or the edge, through the functions that gate each write, to the rows",
+    "output": "diagrams/cloud-data.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "The site"
+        },
+        "cloud": {
+          "label": "The API"
+        },
+        "backend": {
+          "label": "A function"
+        },
+        "database": {
+          "label": "The data model"
+        },
+        "security": {
+          "label": "Identity, keys and the group check"
+        },
+        "external": {
+          "label": "Outside the cloud"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "person",
+      "type": "external",
+      "label": "A person",
+      "sublabel": "Business or Platform",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "invited",
+      "icon": "person"
+    },
+    {
+      "id": "edge",
+      "type": "external",
+      "label": "OVS Edge",
+      "sublabel": "the organization's agent",
+      "pos": [
+        40,
+        280
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "plans, reads"
+    },
+    {
+      "id": "claude",
+      "type": "external",
+      "label": "claude.ai",
+      "sublabel": "acts as the person",
+      "pos": [
+        40,
+        610
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "drafts only"
+    },
+    {
+      "id": "site",
+      "type": "frontend",
+      "label": "The site",
+      "sublabel": "ovs.dlab5.net, Gatsby",
+      "pos": [
+        290,
+        60
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "Cognito"
+    },
+    {
+      "id": "api",
+      "type": "cloud",
+      "label": "AppSync API",
+      "sublabel": "group and field rules",
+      "pos": [
+        290,
+        170
+      ],
+      "size": [
+        170,
+        280
+      ],
+      "tag": "GraphQL"
+    },
+    {
+      "id": "mcp",
+      "type": "security",
+      "label": "MCP server",
+      "sublabel": "OAuth, one URL",
+      "pos": [
+        290,
+        610
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "ovs-claude"
+    },
+    {
+      "id": "admin",
+      "type": "backend",
+      "label": "adminUsers",
+      "sublabel": "people, organizations",
+      "pos": [
+        620,
+        60
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "one writer"
+    },
+    {
+      "id": "loops",
+      "type": "backend",
+      "label": "loops",
+      "sublabel": "propose to close",
+      "pos": [
+        620,
+        170
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "ADR-0027"
+    },
+    {
+      "id": "execute",
+      "type": "backend",
+      "label": "runs, execute",
+      "sublabel": "approve, then write",
+      "pos": [
+        620,
+        280
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "ADR-0023"
+    },
+    {
+      "id": "connections",
+      "type": "backend",
+      "label": "connections",
+      "sublabel": "and teamChannel",
+      "pos": [
+        620,
+        390
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "keys in"
+    },
+    {
+      "id": "proxy",
+      "type": "security",
+      "label": "objectProxy",
+      "sublabel": "the group check",
+      "pos": [
+        620,
+        500
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "tag": "presigned S3"
+    },
+    {
+      "id": "org",
+      "type": "database",
+      "label": "Tenant, Workspace",
+      "sublabel": "organization, workspaces",
+      "pos": [
+        930,
+        60
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "tag": "tenantName"
+    },
+    {
+      "id": "loopdata",
+      "type": "database",
+      "label": "Loop, Story",
+      "sublabel": "Activity, Message, Issue",
+      "pos": [
+        930,
+        170
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "tag": "streams"
+    },
+    {
+      "id": "rundata",
+      "type": "database",
+      "label": "LifecycleRun",
+      "sublabel": "Finding, plan digest",
+      "pos": [
+        930,
+        280
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "tag": "approvals"
+    },
+    {
+      "id": "secrets",
+      "type": "security",
+      "label": "Secrets Manager",
+      "sublabel": "system keys, webhooks",
+      "pos": [
+        930,
+        390
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "tag": "never returned"
+    },
+    {
+      "id": "knowledge",
+      "type": "database",
+      "label": "Workspace object",
+      "sublabel": "S3: graphs, documents",
+      "pos": [
+        930,
+        500
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "tag": "ETag"
+    },
+    {
+      "id": "teamchat",
+      "type": "external",
+      "label": "Team channel",
+      "sublabel": "Discord, Slack, Teams",
+      "pos": [
+        1250,
+        170
+      ],
+      "size": [
+        160,
+        60
+      ],
+      "tag": "out only"
+    },
+    {
+      "id": "shopify",
+      "type": "external",
+      "label": "Shopify",
+      "sublabel": "Admin GraphQL",
+      "pos": [
+        1250,
+        390
+      ],
+      "size": [
+        160,
+        60
+      ],
+      "tag": "writes"
+    },
+    {
+      "id": "odoo",
+      "type": "external",
+      "label": "Odoo",
+      "sublabel": "XML-RPC",
+      "pos": [
+        1250,
+        500
+      ],
+      "size": [
+        160,
+        60
+      ],
+      "tag": "read only"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "dlab5.net: one Amplify app per environment, stage-ovs.dlab5.net and ovs.dlab5.net",
+      "wraps": [
+        "site",
+        "api",
+        "mcp",
+        "admin",
+        "loops",
+        "execute",
+        "connections",
+        "proxy",
+        "org",
+        "loopdata",
+        "rundata",
+        "secrets",
+        "knowledge"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "person-site",
+      "from": "person",
+      "to": "site",
+      "label": "signs in",
+      "variant": "emphasis"
+    },
+    {
+      "id": "site-api",
+      "from": "site",
+      "to": "api",
+      "label": "the person's token",
+      "variant": "emphasis"
+    },
+    {
+      "id": "edge-api",
+      "from": "edge",
+      "to": "api",
+      "label": "agent token",
+      "variant": "security"
+    },
+    {
+      "id": "claude-mcp",
+      "from": "claude",
+      "to": "mcp",
+      "label": "OAuth + PKCE",
+      "variant": "security"
+    },
+    {
+      "id": "mcp-api",
+      "from": "mcp",
+      "to": "api",
+      "label": "the same token",
+      "variant": "default"
+    },
+    {
+      "id": "api-admin",
+      "from": "api",
+      "to": "admin",
+      "label": "adminUsers",
+      "variant": "default"
+    },
+    {
+      "id": "api-loops",
+      "from": "api",
+      "to": "loops",
+      "label": "loop(action)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-execute",
+      "from": "api",
+      "to": "execute",
+      "label": "run, execute",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-connections",
+      "from": "api",
+      "to": "connections",
+      "label": "connection",
+      "variant": "default"
+    },
+    {
+      "id": "api-proxy",
+      "from": "api",
+      "to": "proxy",
+      "label": "read, write object",
+      "variant": "default"
+    },
+    {
+      "id": "admin-org",
+      "from": "admin",
+      "to": "org",
+      "label": "rows + groups",
+      "variant": "default"
+    },
+    {
+      "id": "loops-data",
+      "from": "loops",
+      "to": "loopdata",
+      "label": "status, outcome",
+      "variant": "emphasis"
+    },
+    {
+      "id": "execute-data",
+      "from": "execute",
+      "to": "rundata",
+      "label": "plan, approvedBy",
+      "variant": "emphasis"
+    },
+    {
+      "id": "execute-secret",
+      "from": "execute",
+      "to": "secrets",
+      "label": "Shopify key",
+      "variant": "security"
+    },
+    {
+      "id": "connections-secret",
+      "from": "connections",
+      "to": "secrets",
+      "label": "keys, webhooks",
+      "variant": "security"
+    },
+    {
+      "id": "proxy-object",
+      "from": "proxy",
+      "to": "knowledge",
+      "label": "presigned URL",
+      "variant": "default"
+    },
+    {
+      "id": "talk-team",
+      "from": "loopdata",
+      "to": "teamchat",
+      "label": "notify: new rows",
+      "variant": "dashed"
+    },
+    {
+      "id": "secret-shopify",
+      "from": "secrets",
+      "to": "shopify",
+      "label": "execute writes",
+      "variant": "security"
+    },
+    {
+      "id": "secret-odoo",
+      "from": "secrets",
+      "to": "odoo",
+      "label": "connections reads",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "The loop (ADR-0026, 0027, 0028)",
+      "items": [
+        "A loop is Shape, Realize, Check, Ship; LOOP_STAGES in packages/core/src/lifecycle.ts is the one list.",
+        "Its status goes PROPOSED, OPEN, CLOSED; the loops function is its one writer (backend/amplify/functions/loops/handler.ts) and logs each change in Activity.",
+        "claude.ai proposes a loop with its brief, drafts a retrospective and hands over stories as DRAFTs (functions/mcp/tools.ts). Starting, moving and closing are a person's acts, refused for the chat, the edge and agents (loops/policy.ts).",
+        "A new loop starts only when every earlier one is CLOSED, with an outcome (shipped fully, shipped partially, not shipped, cancelled) and its retrospective."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Who may write what",
+      "items": [
+        "AppSync's group rules let a member read their workspace's rows and create their own Message, Story draft, Decision and Issue (backend/amplify/data/resource.ts). The runs function approves a run and accepts a story, a person's acts (functions/runs/handler.ts).",
+        "A field marked read-only (phase, status, outcome, approvedBy, acceptedBy) is written only by its function.",
+        "Organizations and workspaces, with their Cognito groups and their copied tenantName, are written by adminUsers alone (ADR-0024, ADR-0030).",
+        "Shopify is written only by execute, one approved step at a time, with the key it reads from Secrets Manager; Odoo is only read, by connections (ADR-0023, functions/execute/handler.ts, functions/connections/handler.ts)."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Knowledge and secrets",
+      "items": [
+        "Each workspace's object, its knowledge graphs and its documents, lives in S3 behind objectProxy, which checks the group and hands out a presigned URL; a write needs the current ETag (functions/objectProxy).",
+        "The shared workspace is the organization's second brain, read by every member.",
+        "System keys and team-channel webhooks go into Secrets Manager under ovs/<workspace>/…, never into S3 or a row, and are never returned (functions/connections, functions/notify/channelHandler.ts)."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Talk and the team channel (ADR-0029)",
+      "items": [
+        "Messages live in threads: room:<workspace>, loop:<id> and story:<id>; Presence says who is here.",
+        "The notify function reads the Activity and Message streams and posts one line per event to the workspace's Discord, Slack or Teams webhook, for the categories chosen (functions/notify/handler.ts). Nothing comes back in.",
+        "claude.ai connects with one URL: the MCP server answers its registration with the public ovs-claude client (ADR-0030, functions/mcp/protocol.ts)."
+      ]
+    }
+  ]
+}
