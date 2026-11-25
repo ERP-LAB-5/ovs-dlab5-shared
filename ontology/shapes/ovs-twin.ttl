@@ -1,0 +1,133 @@
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix ovssh:   <http://ovs.dlab5.net/shapes#> .
+@prefix rosetta: <http://ovs.dlab5.net/rosetta#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# What a twin must satisfy to be written (ADR-0037). Consistent, not complete.
+#
+# The edge validates the whole twin (all its parts, with the vocabularies its
+# manifest names) against these shapes before a twin commit writes anything,
+# and refuses a twin that fails. The other half of consistency, that every
+# term the twin uses is declared in a vocabulary its manifest names, is not a
+# shape: check.py's `undeclared` does it, and the edge does the same.
+#
+# examples/twin/ MUST pass; each file in examples/twin-invalid/ MUST fail.
+# ============================================================
+
+# -- the manifest -------------------------------------------------------------------
+
+ovssh:TwinManifestShape a sh:NodeShape ;
+    sh:targetClass ovs:TwinManifest ;
+    sh:property [
+        sh:path dcterms:created ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+        sh:message "A manifest says when it was written."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:usesVocabulary ; sh:minCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A manifest names the vocabularies the twin uses, by their version IRIs."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:usesVocabulary ;
+        sh:qualifiedValueShape [ sh:pattern "^http://ovs\\.dlab5\\.net/ontology/core/[0-9]" ] ;
+        sh:qualifiedMinCount 1 ; sh:qualifiedMaxCount 1 ;
+        sh:message "A manifest names exactly one version of OVS core: the twin is read by its terms."@en ;
+    ] .
+
+# -- gaps ------------------------------------------------------------------------------
+
+ovssh:GapShape a sh:NodeShape ;
+    sh:targetClass ovs:Gap ;
+    sh:property [
+        sh:path rdfs:label ; sh:minCount 1 ;
+        sh:message "A gap says in words what is missing."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:gapStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( ovs:Identified ovs:Acknowledged ) ;
+        sh:message "A gap is either identified or acknowledged."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:gapIn ; sh:class ovs:System ;
+        sh:message "A gap is in a system, named as an ovs:System; a gap in how the business works names none."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:reportCode ; sh:maxCount 1 ; sh:pattern "^L[0-9]+-R[0-9]+$" ;
+        sh:message "A gap's report code is the loop report's: L2-R14."@en ;
+    ] ;
+    sh:or (
+        [ sh:not [ sh:property [ sh:path ovs:gapStatus ; sh:hasValue ovs:Acknowledged ] ] ]
+        [ sh:property [ sh:path ovs:settledBy ; sh:minCount 1 ] ]
+        [ sh:property [ sh:path ovs:acceptedBecause ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "An acknowledged gap says why it is accepted: a decision (ovs:settledBy) or a reason (ovs:acceptedBecause)."@en .
+
+# -- working practices and decisions -------------------------------------------------
+
+ovssh:WorkingPracticeShape a sh:NodeShape ;
+    sh:targetClass ovs:WorkingPractice ;
+    sh:property [
+        sh:path dcterms:title ; sh:minCount 1 ;
+        sh:message "A working practice says what it is, with dcterms:title."@en ;
+    ] .
+
+ovssh:DesignDecisionShape a sh:NodeShape ;
+    sh:targetClass ovs:DesignDecision ;
+    sh:property [
+        sh:path dcterms:title ; sh:minCount 1 ;
+        sh:message "A design decision says what was decided, with dcterms:title."@en ;
+    ] .
+
+# -- releases -------------------------------------------------------------------------
+
+ovssh:TwinReleaseShape a sh:NodeShape ;
+    sh:targetClass ovs:TwinRelease ;
+    sh:property [ sh:path ovs:releaseNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ;
+                  sh:message "A release has one number."@en ] ;
+    sh:property [ sh:path ovs:releaseOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ovs:TwinManifest ;
+                  sh:message "A release names the manifest it was cut with."@en ] ;
+    sh:property [ sh:path ovs:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[0-9a-f]{64}$" ;
+                  sh:message "A release carries the SHA-256 of its files."@en ] ;
+    sh:property [ sh:path dcterms:created ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+                  sh:message "A release says when it was cut."@en ] .
+
+# -- the stones (Rosetta) ---------------------------------------------------------------
+
+ovssh:RosettaConceptShape a sh:NodeShape ;
+    sh:targetClass rosetta:RosettaConcept ;
+    sh:property [ sh:path rosetta:concept ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:message "A stone is about exactly one business class."@en ] ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ;
+                  sh:message "A stone has a name."@en ] .
+
+ovssh:FieldMappingShape a sh:NodeShape ;
+    sh:targetClass rosetta:FieldMapping ;
+    sh:property [ sh:path rosetta:of ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:message "A field mapping belongs to one business class."@en ] ;
+    sh:property [ sh:path rosetta:property ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:message "A field mapping is about one business property."@en ] ;
+    sh:property [ sh:path rosetta:writtenTo ; sh:minCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:message "A field mapping names the target field it is written to."@en ] ;
+    sh:property [ sh:path rosetta:how ; sh:minCount 1 ;
+                  sh:message "A field mapping says, in words, how the value is translated."@en ] .
+
+ovssh:ReadingShape a sh:NodeShape ;
+    sh:targetClass rosetta:Reading , rosetta:Form ;
+    sh:property [ sh:path rosetta:system ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ovs:System ;
+                  sh:message "A reading or a form is of one system."@en ] ;
+    sh:property [ sh:path rosetta:term ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:message "A reading or a form names the system's model or object."@en ] .
+
+# -- the instances ------------------------------------------------------------------------
+# A business individual read from a source must be written somewhere, or say
+# that its counterpart is missing: a missing one is drift, made visible.
+
+ovssh:ReadIsWrittenShape a sh:NodeShape ;
+    sh:targetSubjectsOf rosetta:readFrom ;
+    sh:or (
+        [ sh:class rosetta:FieldMapping ]
+        [ sh:property [ sh:path rosetta:writtenAs ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "A business individual read from a source names what it is written as, or a node with rosetta:missing true."@en .

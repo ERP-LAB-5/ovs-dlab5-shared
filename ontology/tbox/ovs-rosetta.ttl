@@ -1,0 +1,103 @@
+@prefix rosetta: <http://ovs.dlab5.net/rosetta#> .
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# L1 — Rosetta: a business concept with its translations (ADR-0037).
+#
+# A Rosetta Concept, "the stone", is one business concept of an organization
+# carved with its translation into each system: how a source system's records
+# are READ as it, and how a target system WRITES it, field by field, with the
+# decisions behind each line. The translation lives in the twin as data,
+# reviewable, rather than only in the edge's code. "Deep Rosetta" is the same
+# stone read as Turtle.
+#
+# General: this file names no organization. An organization's stones and
+# business classes are private, in its vault.
+#
+# It extends the core: a Reading's and a Form's term is an ovs:SystemTerm, the
+# END of an alignment (ADR-0011); the business concept is the MIDDLE. Odoo and
+# Shopify never map to each other; both map to the organization's concept.
+#
+# Instances name the records they are read from and written as with IRIs in
+# the workspace's own space (urn:ovs:<workspace>:odoo/product.template/7),
+# never in a vocabulary's namespace: a record is not a term.
+# ============================================================
+
+<http://ovs.dlab5.net/ontology/rosetta> a owl:Ontology ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/rosetta/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <http://ovs.dlab5.net/ontology/core> ;
+    rdfs:label "Rosetta: business concepts with their translations"@en ,
+               "Rosetta: Geschäftsbegriffe mit ihren Übersetzungen"@de ,
+               "Rosetta : concepts métier et leurs traductions"@fr .
+
+rosetta:RosettaConcept a owl:Class ;
+    rdfs:label "Rosetta concept"@en , "Rosetta-Begriff"@de , "concept Rosetta"@fr ;
+    skos:definition "One business concept of an organization, with how each of its systems reads or writes it, and the decisions behind that."@en .
+
+rosetta:Reading a owl:Class ;
+    rdfs:label "reading"@en , "Lesart"@de , "lecture"@fr ;
+    skos:definition "How a source system's records are recognised as a concept or one of its parts."@en .
+
+rosetta:Form a owl:Class ;
+    rdfs:label "form"@en , "Form"@de , "forme"@fr ;
+    skos:definition "How a target system writes a concept: its object, options, values and fields."@en .
+
+rosetta:FieldMapping a owl:Class ;
+    rdfs:label "field mapping"@en , "Feldzuordnung"@de , "correspondance de champ"@fr ;
+    skos:definition "One business property of a concept: the system field it is read from, the system field it is written to, how, and why."@en .
+
+# -- the stone -------------------------------------------------------------------
+rosetta:concept   a owl:ObjectProperty ; rdfs:domain rosetta:RosettaConcept ; rdfs:label "concept"@en ;
+    skos:definition "The business class the stone is about."@en .
+rosetta:readIn    a owl:ObjectProperty ; rdfs:domain rosetta:RosettaConcept ; rdfs:range rosetta:Reading ; rdfs:label "read in"@en .
+rosetta:writtenIn a owl:ObjectProperty ; rdfs:domain rosetta:RosettaConcept ; rdfs:range rosetta:Form ; rdfs:label "written in"@en .
+rosetta:field     a owl:ObjectProperty ; rdfs:domain rosetta:RosettaConcept ; rdfs:range rosetta:FieldMapping ; rdfs:label "field"@en .
+rosetta:decidedBy a owl:ObjectProperty ; rdfs:range ovs:DesignDecision ; rdfs:label "decided by"@en ;
+    skos:definition "A design decision (ADR-0034) behind the stone or one of its lines."@en .
+
+# -- readings and forms ------------------------------------------------------------
+rosetta:system   a owl:ObjectProperty ; rdfs:range ovs:System ; rdfs:label "system"@en .
+rosetta:term     a owl:ObjectProperty ; rdfs:label "term"@en ;
+    skos:definition "The system's model, table or object: an end of the alignment, never its middle. An ovs:SystemTerm, or an organization's ovs:Extension of one."@en .
+rosetta:asPart   a owl:ObjectProperty ; rdfs:label "as part"@en ;
+    skos:definition "Which business class a record read this way stands for: the whole concept, or one of its parts."@en .
+rosetta:identifiedBy a owl:ObjectProperty ; rdfs:label "identified by"@en ;
+    skos:definition "A node naming the term (rosetta:term) whose value tells records of the concept apart: an attribute, a reference."@en .
+rosetta:namePattern  a owl:ObjectProperty ; rdfs:domain rosetta:Reading ; rdfs:label "name pattern"@en .
+rosetta:pattern      a owl:DatatypeProperty ; rdfs:label "pattern"@en ;
+    skos:definition "A regular expression over a record's name; a named group `d` is the design."@en .
+rosetta:language     a owl:DatatypeProperty ; rdfs:label "language"@en .
+rosetta:writes       a owl:ObjectProperty ; rdfs:domain rosetta:Form ; rdfs:label "writes"@en .
+rosetta:onePer       a owl:ObjectProperty ; rdfs:domain rosetta:Form ; rdfs:label "one per"@en ;
+    skos:definition "The business properties whose combination makes one target object."@en .
+rosetta:option       a owl:ObjectProperty ; rdfs:domain rosetta:Form ; rdfs:label "option"@en .
+rosetta:optionName   a owl:DatatypeProperty ; rdfs:label "option name"@en .
+rosetta:means        a owl:ObjectProperty ; rdfs:label "means"@en ;
+    skos:definition "The business property or concept a system's option or field carries."@en .
+rosetta:valueMap     a owl:DatatypeProperty ; rdfs:label "value map"@en ;
+    skos:definition "Business values to the system's literals, as JSON (like ovs:valueMap)."@en .
+
+# -- field by field ------------------------------------------------------------------
+rosetta:of         a owl:ObjectProperty ; rdfs:domain rosetta:FieldMapping ; rdfs:label "of"@en ;
+    skos:definition "The business class the property belongs to."@en .
+rosetta:property   a owl:ObjectProperty ; rdfs:domain rosetta:FieldMapping ; rdfs:label "property"@en ;
+    skos:definition "The business property: the organization's own, or schema.org's."@en .
+rosetta:readFrom   a owl:ObjectProperty ; rdfs:label "read from"@en ;
+    skos:definition "On a field mapping: the source system's field. On a business individual: a source record it is read from, directly or through a node naming the record (rosetta:record) and the part it stands for."@en .
+rosetta:writtenTo  a owl:ObjectProperty ; rdfs:domain rosetta:FieldMapping ; rdfs:label "written to"@en ;
+    skos:definition "The target system's field: an ovs:SystemTerm, or an ovs:Extension of the organization's."@en .
+rosetta:how        a owl:DatatypeProperty ; rdfs:domain rosetta:FieldMapping ; rdfs:label "how"@en ;
+    skos:definition "The translation in plain words; a transform's name where the code has one."@en .
+
+# -- the A-Box's links -------------------------------------------------------------
+rosetta:record    a owl:ObjectProperty ; rdfs:label "record"@en ;
+    skos:definition "A source or target record, as an IRI in the workspace's own space."@en .
+rosetta:writtenAs a owl:ObjectProperty ; rdfs:label "written as"@en ;
+    skos:definition "The target record this business individual is written as, or a node with rosetta:missing true."@en .
+rosetta:missing   a owl:DatatypeProperty ; rdfs:label "missing"@en ;
+    skos:definition "True where the counterpart is expected and not there: drift, a finding."@en .

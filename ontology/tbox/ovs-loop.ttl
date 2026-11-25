@@ -1,0 +1,150 @@
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix loop:    <http://ovs.dlab5.net/loop#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix schema:  <https://schema.org/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# L1 — how OVS works: the loop and its human gates (ADR-0037).
+#
+# OVS's own concepts, general for every organization, so public. They are
+# the words the OVS Cloud, the OVS Edge and the MCP server already use. Here
+# they become part of the twin's language, so claude.ai and Mission Control
+# read a loop, a finding or a plan as data, not as a screen.
+#
+# Values and rules are those of the cloud's code (ADR-0026, 0027, 0032, 0036).
+# ============================================================
+
+<http://ovs.dlab5.net/ontology/loop> a owl:Ontology ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/loop/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <http://ovs.dlab5.net/ontology/core> ;
+    rdfs:label "OntoVibeShift loops, reports and plans"@en ,
+               "OntoVibeShift-Loops, Meldungen und Pläne"@de ,
+               "Boucles, signalements et plans d'OntoVibeShift"@fr .
+
+# -- organizations and workspaces (ADR-0024) ---------------------------------------
+
+loop:Organization a owl:Class ; rdfs:subClassOf schema:Organization ;
+    rdfs:label "organization"@en , "Organisation"@de , "organisation"@fr ;
+    skos:definition "A business using OVS: its people, its workspaces, its connections and its knowledge."@en .
+
+loop:Workspace a owl:Class ;
+    rdfs:label "workspace"@en , "Arbeitsbereich"@de , "espace de travail"@fr ;
+    skos:definition "Where one kind of work for an organization happens, with its own members and graph."@en .
+loop:organization a owl:ObjectProperty , owl:FunctionalProperty ; rdfs:domain loop:Workspace ; rdfs:range loop:Organization .
+
+loop:WorkspaceKinds a skos:ConceptScheme ; skos:prefLabel "workspace kinds"@en .
+loop:Shared a skos:Concept ; skos:inScheme loop:WorkspaceKinds ; skos:prefLabel "shared: the second brain"@en ;
+    skos:definition "One per organization: its connections, decisions, backlog and twin, read by every member."@en .
+loop:Build  a skos:Concept ; skos:inScheme loop:WorkspaceKinds ; skos:prefLabel "build & maintain"@en ;
+    skos:definition "One or more: loops change the systems, each change approved."@en .
+loop:Operations a skos:Concept ; skos:inScheme loop:WorkspaceKinds ; skos:prefLabel "operations: Mission Control"@en ;
+    skos:definition "One: watches the live systems against the latest twin release; writes nothing to them."@en .
+loop:kind a owl:ObjectProperty ; rdfs:domain loop:Workspace ; rdfs:range skos:Concept .
+
+# -- the loop (ADR-0026, ADR-0027) ----------------------------------------------------
+
+loop:Loop a owl:Class ;
+    rdfs:label "loop"@en , "Schleife"@de , "boucle"@fr ;
+    skos:definition "One objective, shaped, realized, checked and shipped, then closed with an outcome and a retrospective. One loop is open at a time."@en .
+loop:number a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:domain loop:Loop ; rdfs:range xsd:integer .
+loop:objective a owl:DatatypeProperty ; rdfs:domain loop:Loop ; rdfs:label "objective"@en .
+loop:definitionOfDone a owl:DatatypeProperty ; rdfs:domain loop:Loop ; rdfs:label "definition of done"@en .
+loop:workspace a owl:ObjectProperty ; rdfs:range loop:Workspace .
+
+loop:Stages a skos:ConceptScheme ; skos:prefLabel "stages"@en .
+loop:Shape   a skos:Concept ; skos:inScheme loop:Stages ; skos:prefLabel "Shape"@en ;
+    skos:definition "Business shapes the objective, the brief and the stories, with claude.ai."@en .
+loop:Realize a skos:Concept ; skos:inScheme loop:Stages ; skos:prefLabel "Realize"@en ;
+    skos:definition "The edge builds: reads the systems, prepares plans, reports findings. Not over while an item is open."@en .
+loop:Check   a skos:Concept ; skos:inScheme loop:Stages ; skos:prefLabel "Check"@en ;
+    skos:definition "Business tests the result in the test shop."@en .
+loop:Ship    a skos:Concept ; skos:inScheme loop:Stages ; skos:prefLabel "Ship"@en ;
+    skos:definition "After a person approves the shipment, the release plan publishes what passed."@en .
+loop:Shape skos:related loop:Realize . loop:Realize skos:related loop:Check . loop:Check skos:related loop:Ship .
+loop:stage a owl:ObjectProperty ; rdfs:domain loop:Loop ; rdfs:range skos:Concept .
+
+loop:Statuses a skos:ConceptScheme .
+loop:Proposed a skos:Concept ; skos:inScheme loop:Statuses ; skos:prefLabel "proposed"@en .
+loop:Open     a skos:Concept ; skos:inScheme loop:Statuses ; skos:prefLabel "open"@en .
+loop:Closed   a skos:Concept ; skos:inScheme loop:Statuses ; skos:prefLabel "closed"@en .
+loop:status a owl:ObjectProperty ; rdfs:range skos:Concept .
+
+# how a loop ended (ADR-0032), the Edison rule: a cancelled loop is kept with what it taught
+loop:OutcomeCodes a skos:ConceptScheme ; skos:prefLabel "outcome codes"@en .
+loop:Done      a skos:Concept ; skos:inScheme loop:OutcomeCodes ; skos:notation "X"  ; skos:prefLabel "done"@en .
+loop:Plus      a skos:Concept ; skos:inScheme loop:OutcomeCodes ; skos:notation "X+" ; skos:prefLabel "done, and more was added"@en .
+loop:Minus     a skos:Concept ; skos:inScheme loop:OutcomeCodes ; skos:notation "X-" ; skos:prefLabel "done, with something removed"@en .
+loop:Changed   a skos:Concept ; skos:inScheme loop:OutcomeCodes ; skos:notation "X~" ; skos:prefLabel "done, as changed on the way"@en .
+loop:Cancelled a skos:Concept ; skos:inScheme loop:OutcomeCodes ; skos:notation "!X" ; skos:prefLabel "cancelled, with what it taught"@en .
+loop:outcome a owl:ObjectProperty ; rdfs:domain loop:Loop ; rdfs:range skos:Concept .
+
+loop:Retrospective a owl:Class ; rdfs:label "retrospective"@en ;
+    skos:definition "What went well, what didn't and what was learned, for Business and for Platform: the Captain's Log. It shapes the next loop's brief."@en .
+loop:retrospective a owl:ObjectProperty ; rdfs:domain loop:Loop ; rdfs:range loop:Retrospective .
+
+# -- what a loop reports (ADR-0027) ----------------------------------------------------
+
+loop:Report a owl:Class ; rdfs:label "report"@en ;
+    skos:definition "Something a loop found and someone has to act on or know. It belongs to one loop and carries a code like L2-R14."@en .
+loop:Issue       a owl:Class ; rdfs:subClassOf loop:Report ; rdfs:label "issue"@en ; skos:definition "Something wrong, to fix."@en .
+loop:Finding     a owl:Class ; rdfs:subClassOf loop:Report ; rdfs:label "finding"@en ; skos:definition "Something learned that asks for a decision, often in a source system."@en .
+loop:Observation a owl:Class ; rdfs:subClassOf loop:Report ; rdfs:label "observation"@en ; skos:definition "Something worth knowing; nothing to do yet."@en .
+loop:code a owl:DatatypeProperty ; rdfs:domain loop:Report .
+loop:inLoop a owl:ObjectProperty ; rdfs:domain loop:Report ; rdfs:range loop:Loop .
+
+loop:Sides a skos:ConceptScheme ; skos:prefLabel "owners"@en .
+loop:Business a skos:Concept ; skos:inScheme loop:Sides ; skos:prefLabel "Business"@en .
+loop:Platform a skos:Concept ; skos:inScheme loop:Sides ; skos:prefLabel "Platform"@en .
+loop:owner a owl:ObjectProperty ; rdfs:range skos:Concept .
+
+loop:Severities a skos:ConceptScheme .
+loop:Blocker a skos:Concept ; skos:inScheme loop:Severities ; skos:prefLabel "blocker"@en .
+loop:Warning a skos:Concept ; skos:inScheme loop:Severities ; skos:prefLabel "warning"@en .
+loop:Info    a skos:Concept ; skos:inScheme loop:Severities ; skos:prefLabel "info"@en .
+loop:severity a owl:ObjectProperty ; rdfs:domain loop:Report ; rdfs:range skos:Concept .
+
+loop:ReportStatuses a skos:ConceptScheme .
+loop:ReportOpen   a skos:Concept ; skos:inScheme loop:ReportStatuses ; skos:prefLabel "open"@en .
+loop:Fixing       a skos:Concept ; skos:inScheme loop:ReportStatuses ; skos:prefLabel "fixing"@en .
+loop:Fixed        a skos:Concept ; skos:inScheme loop:ReportStatuses ; skos:prefLabel "fixed"@en .
+loop:WontFix      a skos:Concept ; skos:inScheme loop:ReportStatuses ; skos:prefLabel "won't fix"@en .
+loop:Acknowledged a skos:Concept ; skos:inScheme loop:ReportStatuses ; skos:prefLabel "acknowledged"@en ;
+    skos:definition "Known and accepted; it does not hold the loop."@en .
+
+# -- plans: runs are like pull requests (ADR-0036) ----------------------------------------
+
+loop:Plan a owl:Class ; rdfs:subClassOf prov:Plan ;
+    rdfs:label "plan"@en , "Plan"@de , "plan"@fr ;
+    skos:definition "The steps the cloud will write to a target system, proposed by the edge, approved by a person, run step by step. Named by its SHA-256 digest."@en .
+loop:topic a owl:DatatypeProperty ; rdfs:domain loop:Plan ;
+    skos:definition "What the plan is about, like a pull request's branch: cushions, readiness, release:<run>, stock:<run>. A newer plan on the same topic closes the older."@en .
+loop:digest a owl:DatatypeProperty ; rdfs:domain loop:Plan .
+
+loop:PlanStates a skos:ConceptScheme ; skos:prefLabel "a plan's life"@en .
+loop:PlanOpen     a skos:Concept ; skos:inScheme loop:PlanStates ; skos:prefLabel "open"@en ; skos:definition "Proposed and checked; waits on a person."@en .
+loop:PlanApproved a skos:Concept ; skos:inScheme loop:PlanStates ; skos:prefLabel "approved"@en ; skos:definition "A person approved it, with its digest. Never the edge, never a chat."@en .
+loop:PlanRan      a skos:Concept ; skos:inScheme loop:PlanStates ; skos:prefLabel "ran"@en ; skos:definition "Each step sent once; its outcome kept."@en .
+loop:PlanClosed   a skos:Concept ; skos:inScheme loop:PlanStates ; skos:prefLabel "closed"@en ; skos:definition "Replaced by a newer plan on its topic, or cancelled. It never runs."@en .
+loop:state a owl:ObjectProperty ; rdfs:domain loop:Plan ; rdfs:range skos:Concept .
+loop:approvedBy a owl:ObjectProperty ; rdfs:domain loop:Plan ; rdfs:range schema:Person ; rdfs:subPropertyOf prov:wasAttributedTo .
+loop:replacedBy a owl:ObjectProperty ; rdfs:domain loop:Plan ; rdfs:range loop:Plan .
+
+# -- the human gates ---------------------------------------------------------------------
+
+loop:Gates a skos:ConceptScheme ; skos:prefLabel "human gates"@en ;
+    skos:definition "The acts only a person may take, on the OVS Cloud. claude.ai may propose and draft; it decides none of these."@en .
+loop:SubmitGate   a skos:Concept ; skos:inScheme loop:Gates ; skos:prefLabel "submit a loop"@en .
+loop:PlanGate     a skos:Concept ; skos:inScheme loop:Gates ; skos:prefLabel "approve a plan"@en .
+loop:ShipmentGate a skos:Concept ; skos:inScheme loop:Gates ; skos:prefLabel "approve the shipment"@en .
+loop:CloseGate    a skos:Concept ; skos:inScheme loop:Gates ; skos:prefLabel "close a loop"@en .
+
+# -- what is already in the core, placed in the loop ---------------------------------------
+ovs:Story         rdfs:seeAlso loop:Loop .      # a story is given to a workspace, and shapes a loop
+ovs:DesignDecision rdfs:seeAlso loop:Loop .     # decisions are taken in loops and kept in the twin
+ovs:TwinState     rdfs:seeAlso loop:Loop .      # each state names the loop it was taken in (ovs:inLoop)

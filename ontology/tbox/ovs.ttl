@@ -27,12 +27,12 @@
 
 <http://ovs.dlab5.net/ontology/core>
     a owl:Ontology ;
-    owl:versionIRI <http://ovs.dlab5.net/ontology/core/0.7.0> ;
-    owl:versionInfo "0.7.0" ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/core/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
     rdfs:label "OntoVibeShift core terms"@en ,
                "OntoVibeShift-Kernbegriffe"@de ,
                "Termes fondamentaux d'OntoVibeShift"@fr ;
-    dcterms:description "The layer vocabulary: what a system ontology is, what a customization is, and (0.2.0, ADR-0018) what a capability is and how a workspace records it; (0.3.0) what a mapping is; (0.4.0) which way it flows; (0.5.0, ADR-0021) how documents travel: handovers, journeys, exceptions and carriers; (0.6.0, ADR-0033) the twin's state of the platforms: themes and their branches, and the systems' settings; (0.7.0, ADR-0034) the design decisions the platforms are built by."@en .
+    dcterms:description "The layer vocabulary: what a system ontology is, what a customization is, and (0.2.0, ADR-0018) what a capability is and how a workspace records it; (0.3.0) what a mapping is; (0.4.0) which way it flows; (0.5.0, ADR-0021) how documents travel: handovers, journeys, exceptions and carriers; (0.6.0, ADR-0033) the twin's state of the platforms: themes and their branches, and the systems' settings; (0.7.0, ADR-0034) the design decisions the platforms are built by; (1.0.0, ADR-0037) the layers of the twin's vocabularies: external ontologies annotated, never edited; a system version's constraints and known issues; where a term was learned; the organization's business vocabulary."@en .
 
 # -- the layers themselves -----------------------------------------------------
 #
@@ -649,3 +649,111 @@ ovs:supersedes a owl:ObjectProperty ;
     rdfs:range ovs:DesignDecision ;
     rdfs:label "supersedes"@en , "ersetzt"@de , "remplace"@fr ;
     rdfs:comment "The earlier decision this one replaces. The earlier one stays, so the history is kept."@en .
+
+# ============================================================
+# 1.0.0 (ADR-0037): the twin's vocabularies and their versions.
+#
+# L0  schema.org and other external ontologies: imported at a pinned release,
+#     never copied, never edited. What OVS says about them is in an
+#     annotation document of its own (external/*.ovs.ttl).
+# L1  OVS core: this file, the process layer, the loop, Rosetta, the twin.
+# L2  one system at one version: its terms (systems/), what it can do
+#     (capabilities/), and its limits and known issues (constraints/).
+# Lb  the organization's business vocabulary, and L3 its customizations:
+#     private, in the organization's vault.
+# The A-Box, the twin, says which of these it was written against.
+# ============================================================
+
+# -- external ontologies, annotated -------------------------------------------
+
+ovs:ExternalAnnotation a owl:Class ;
+    rdfs:subClassOf owl:Ontology ;
+    rdfs:label "annotations of an external ontology"@en , "Annotationen einer externen Ontologie"@de , "annotations d'une ontologie externe"@fr ;
+    rdfs:comment "L0. What OVS says about an ontology it does not own (schema.org): which release it is pinned to, and which of its terms OVS relies on. The external ontology itself is never copied or changed."@en .
+
+ovs:annotates a owl:ObjectProperty ;
+    rdfs:domain ovs:ExternalAnnotation ;
+    rdfs:label "annotates"@en , "annotiert"@de , "annote"@fr ;
+    rdfs:comment "The external ontology's namespace."@en .
+
+ovs:pinnedRelease a owl:ObjectProperty ;
+    rdfs:domain ovs:ExternalAnnotation ;
+    rdfs:label "pinned release"@en , "festgelegte Version"@de , "version épinglée"@fr ;
+    rdfs:comment "The release of the external ontology OVS is written against, as that ontology's own version IRI. A newer release is checked, and adopted by a new OVS version."@en .
+
+ovs:reliesOn a owl:ObjectProperty ;
+    rdfs:domain ovs:ExternalAnnotation ;
+    rdfs:label "relies on"@en , "stützt sich auf"@de , "s'appuie sur"@fr ;
+    rdfs:comment "A term of the external ontology that OVS's vocabularies or a twin use. A newer release that removes or supersedes one is a finding."@en .
+
+# -- a system version's limits and known issues (L2) --------------------------
+
+ovs:ConstraintOntology a owl:Class ;
+    rdfs:subClassOf owl:Ontology ;
+    rdfs:label "constraint ontology"@en , "Grenzen-Ontologie"@de , "ontologie des contraintes"@fr ;
+    rdfs:comment "L2. The limits and known issues of one system at one version: the sizes, counts and behaviours a plan must respect. Product knowledge, never one customer's."@en .
+
+ovs:constraintsOf a owl:ObjectProperty ;
+    rdfs:domain ovs:ConstraintOntology ;
+    rdfs:range ovs:System ;
+    rdfs:label "constraints of"@en , "Grenzen von"@de , "contraintes de"@fr .
+
+ovs:Constraint a owl:Class ;
+    rdfs:label "constraint"@en , "Grenze"@de , "contrainte"@fr ;
+    rdfs:comment "A limit a system version sets on one of its terms: a value with a unit, under a key the code reads it by (maxBytes, maxWidth). Code reads the limit here instead of keeping its own copy."@en .
+
+ovs:constrains a owl:ObjectProperty ;
+    rdfs:domain ovs:Constraint ;
+    rdfs:label "constrains"@en , "begrenzt"@de , "contraint"@fr ;
+    rdfs:comment "The system term the limit is on. Deliberately no rdfs:range, as with ovs:implementedBy."@en .
+
+ovs:limitKey a owl:DatatypeProperty ;
+    rdfs:domain ovs:Constraint ;
+    rdfs:label "key"@en , "Schlüssel"@de , "clé"@fr ;
+    rdfs:comment "The name the code reads the limit by. Stable across versions, so a new version's file is read the same way."@en .
+
+ovs:limitValue a owl:DatatypeProperty ;
+    rdfs:domain ovs:Constraint ;
+    rdfs:label "value"@en , "Wert"@de , "valeur"@fr .
+
+ovs:limitUnit a owl:DatatypeProperty ;
+    rdfs:domain ovs:Constraint ;
+    rdfs:label "unit"@en , "Einheit"@de , "unité"@fr ;
+    rdfs:comment "byte, pixel, count, ratio."@en .
+
+ovs:KnownIssue a owl:Class ;
+    rdfs:label "known issue"@en , "bekanntes Problem"@de , "problème connu"@fr ;
+    rdfs:comment "A behaviour of a system version that a plan has to work around: what happens, on which term, and the workaround."@en .
+
+ovs:affects a owl:ObjectProperty ;
+    rdfs:domain ovs:KnownIssue ;
+    rdfs:label "affects"@en , "betrifft"@de , "affecte"@fr .
+
+ovs:workaround a owl:DatatypeProperty ;
+    rdfs:domain ovs:KnownIssue ;
+    rdfs:label "workaround"@en , "Umgehung"@de , "contournement"@fr .
+
+# -- where a term was learned --------------------------------------------------
+# A system vocabulary is drafted from the vendor's public documentation and
+# corrected by discovery when a gap appears. The correction comes back to the
+# public vocabulary, with nothing of the customer in it.
+
+ovs:LearnedHow a owl:Class ;
+    rdfs:label "how it was learned"@en , "wie es gelernt wurde"@de , "comment c'est appris"@fr .
+ovs:FromDocumentation a ovs:LearnedHow ;
+    rdfs:label "from the vendor's documentation"@en , "aus der Dokumentation des Herstellers"@de , "de la documentation de l'éditeur"@fr ;
+    rdfs:comment "dcterms:source names the page."@en .
+ovs:FromDiscovery a ovs:LearnedHow ;
+    rdfs:label "from discovery"@en , "aus der Erkundung"@de , "de la découverte"@fr ;
+    rdfs:comment "Seen in a real system, where the documentation was silent or wrong. Stated generally: never the customer's data."@en .
+
+ovs:learnedFrom a owl:ObjectProperty ;
+    rdfs:range ovs:LearnedHow ;
+    rdfs:label "learned from"@en , "gelernt aus"@de , "appris de"@fr .
+
+# -- the organization's business vocabulary (Lb) -------------------------------
+
+ovs:BusinessOntology a owl:Class ;
+    rdfs:subClassOf owl:Ontology ;
+    rdfs:label "business ontology"@en , "Geschäfts-Ontologie"@de , "ontologie métier"@fr ;
+    rdfs:comment "Lb. What one organization has learned to say about its business, loop by loop: its products and their parts, as subclasses of schema.org's. Private: it lives in the organization's vault, never in a public repository. Versioned by loop."@en .
