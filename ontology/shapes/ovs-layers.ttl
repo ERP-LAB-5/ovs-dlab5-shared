@@ -208,3 +208,64 @@ ovssh:CustomizationKindShape a sh:NodeShape ;
         sh:qualifiedMaxCount 1 ;
         sh:message "A customization is exactly one of ovs:Extension, ovs:Alteration or ovs:Suppression. The three are treated differently on purpose and a node that is two of them has no defined handling."@en ;
     ] .
+
+# ============================================================
+# Capability ontologies (Lc, ADR-0018)
+# ============================================================
+
+# -- the document --------------------------------------------------------------
+
+ovssh:CapabilityOntologyShape a sh:NodeShape ;
+    sh:targetClass ovs:CapabilityOntology ;
+    sh:property [
+        sh:path owl:versionIRI ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A capability ontology is one platform at one version: it carries exactly one owl:versionIRI."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:capabilitiesOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ovs:System ;
+        sh:message "A capability ontology says which system it is about, with ovs:capabilitiesOf."@en ;
+    ] .
+
+# -- a capability ----------------------------------------------------------------
+
+ovssh:StepInAScheme a sh:NodeShape ;
+    sh:property [
+        sh:path skos:inScheme ; sh:minCount 1 ;
+        sh:message "A step a capability serves is a concept in a declared process scheme (tbox/ovs-concepts.ttl)."@en ;
+    ] .
+
+ovssh:CapabilityShape a sh:NodeShape ;
+    sh:targetClass ovs:Capability ;
+    sh:property [
+        sh:path rdfs:label ; sh:minCount 1 ;
+        sh:message "A capability has a label a person can read."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:servesStep ; sh:minCount 1 ; sh:node ovssh:StepInAScheme ;
+        sh:message "A capability serves at least one process step, and the step must be in a declared scheme. A capability that serves no step is not part of any process."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:obtainedBy ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:in ( ovs:Core ovs:Edition ovs:PlanTier ovs:Module ovs:App ) ;
+        sh:message "A capability is obtained exactly one way: ovs:Core, ovs:Edition, ovs:PlanTier, ovs:Module or ovs:App. What else it needs is ovs:requires."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:implementedBy ; sh:class ovs:SystemTerm ;
+        sh:message "A capability is implemented by system terms (L2): validate it together with the system ontology it imports."@en ;
+    ] .
+
+ovssh:GatedCapabilityShape a sh:NodeShape ;
+    sh:targetClass ovs:Capability ;
+    sh:or (
+        [ sh:property [ sh:path ovs:obtainedBy ; sh:in ( ovs:Core ovs:App ) ] ]
+        [ sh:property [ sh:path ovs:requires ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "A capability obtained by edition, plan tier or module names what it requires (ovs:requires): which edition, which plan, which module."@en .
+
+ovssh:AppCapabilityShape a sh:NodeShape ;
+    sh:targetClass ovs:Capability ;
+    sh:or (
+        [ sh:property [ sh:path ovs:obtainedBy ; sh:in ( ovs:Core ovs:Edition ovs:PlanTier ovs:Module ) ] ]
+        [ sh:property [ sh:path ovs:offeredBy ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "An app names who offers it (ovs:offeredBy). A third-party capability is named, never assumed."@en .

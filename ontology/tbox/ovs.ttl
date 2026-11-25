@@ -27,12 +27,12 @@
 
 <http://ovs.dlab5.net/ontology/core>
     a owl:Ontology ;
-    owl:versionIRI <http://ovs.dlab5.net/ontology/core/0.1.0> ;
-    owl:versionInfo "0.1.0" ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/core/0.7.0> ;
+    owl:versionInfo "0.7.0" ;
     rdfs:label "OntoVibeShift core terms"@en ,
                "OntoVibeShift-Kernbegriffe"@de ,
                "Termes fondamentaux d'OntoVibeShift"@fr ;
-    dcterms:description "The layer vocabulary: what a system ontology is, and what a customization is."@en .
+    dcterms:description "The layer vocabulary: what a system ontology is, what a customization is, and (0.2.0, ADR-0018) what a capability is and how a workspace records it; (0.3.0) what a mapping is; (0.4.0) which way it flows; (0.5.0, ADR-0021) how documents travel: handovers, journeys, exceptions and carriers; (0.6.0, ADR-0033) the twin's state of the platforms: themes and their branches, and the systems' settings; (0.7.0, ADR-0034) the design decisions the platforms are built by."@en .
 
 # -- the layers themselves -----------------------------------------------------
 #
@@ -204,3 +204,448 @@ ovs:aligned a owl:DatatypeProperty ;
     rdfs:domain ovs:AssertedIndividual ;
     rdfs:label "aligned"@en , "zugeordnet"@de , "aligné"@fr ;
     rdfs:comment "Whether this row has a counterpart in another system yet. FALSE is a first-class result, not a failure: a product discovered before its twin exists has no fused identity, and that is the normal state during discovery (ADR-0011)."@en .
+
+# ============================================================
+# Capabilities (ADR-0018) — what a platform can DO for a step, and how a
+# deployment comes to be able to do it. Between L1 (the steps) and L2 (the
+# terms): a capability serves steps and is implemented by terms.
+# ============================================================
+
+ovs:CapabilityOntology a owl:Class ;
+    rdfs:subClassOf owl:Ontology ;
+    rdfs:label "capability ontology"@en , "Fähigkeits-Ontologie"@de , "ontologie des capacités"@fr ;
+    rdfs:comment "Lc. What one platform at one version can do, per step, and how each capability is obtained. Curated and reviewed; product knowledge, never one customer's."@en .
+
+ovs:capabilitiesOf a owl:ObjectProperty ;
+    rdfs:domain ovs:CapabilityOntology ;
+    rdfs:range ovs:System ;
+    rdfs:label "capabilities of"@en , "Fähigkeiten von"@de , "capacités de"@fr ;
+    rdfs:comment "Which system a capability ontology is about. Not ovs:describesSystem: that one's domain makes a document a system ontology (L2), and a catalogue is not one."@en .
+
+ovs:Capability a owl:Class ;
+    rdfs:label "capability"@en , "Fähigkeit"@de , "capacité"@fr ;
+    rdfs:comment "Something a platform can do for one or more process steps: sell a kit, publish a catalogue in three languages. Its terms sit in L2; how it is obtained is ovs:obtainedBy."@en .
+
+ovs:servesStep a owl:ObjectProperty ;
+    rdfs:domain ovs:Capability ;
+    rdfs:range skos:Concept ;
+    rdfs:label "serves step"@en , "dient dem Schritt"@de , "sert l'étape"@fr .
+
+ovs:implementedBy a owl:ObjectProperty ;
+    rdfs:domain ovs:Capability ;
+    rdfs:label "implemented by"@en , "umgesetzt durch"@de , "mis en œuvre par"@fr ;
+    rdfs:comment "The L2 terms the capability works through. What Map maps. Deliberately no rdfs:range: under RDFS inference a range would make anything named here a system term, and the shape that checks it (ovs-layers.ttl) could never fail."@en .
+
+# -- how a capability is obtained ------------------------------------------------
+#
+# A platform is its available capabilities: the ones it ships, plus the
+# third-party ones, plus the ones a deployment licensed, subscribed to or
+# acquired. Exactly one way per capability; what it additionally needs (a plan,
+# an edition, a module) is ovs:requires.
+
+ovs:ObtainmentKind a owl:Class ;
+    rdfs:label "way of obtaining"@en , "Bezugsweg"@de , "mode d'obtention"@fr .
+
+ovs:Core a ovs:ObtainmentKind ; rdfs:label "core"@en , "Kern"@de , "cœur"@fr ;
+    rdfs:comment "Ships with every deployment of the platform."@en .
+ovs:Edition a ovs:ObtainmentKind ; rdfs:label "edition"@en , "Edition"@de , "édition"@fr ;
+    rdfs:comment "Only in one edition, e.g. Odoo Enterprise."@en .
+ovs:PlanTier a ovs:ObtainmentKind ; rdfs:label "plan tier"@en , "Tarifstufe"@de , "niveau d'abonnement"@fr ;
+    rdfs:comment "Only from a plan tier up, e.g. a Shopify plan."@en .
+ovs:Module a ovs:ObtainmentKind ; rdfs:label "module"@en , "Modul"@de , "module"@fr ;
+    rdfs:comment "Shipped, but present only when a module is installed."@en .
+ovs:App a ovs:ObtainmentKind ; rdfs:label "app"@en , "App"@de , "application"@fr ;
+    rdfs:comment "A third-party addition, offered by someone other than the platform (ovs:offeredBy)."@en .
+
+ovs:obtainedBy a owl:ObjectProperty ;
+    rdfs:domain ovs:Capability ;
+    rdfs:range ovs:ObtainmentKind ;
+    rdfs:label "obtained by"@en , "bezogen als"@de , "obtenu par"@fr .
+
+ovs:requires a owl:ObjectProperty ;
+    rdfs:domain ovs:Capability ;
+    rdfs:label "requires"@en , "erfordert"@de , "requiert"@fr ;
+    rdfs:comment "The edition, plan tier or module a capability needs, as a concept of the capability ontology."@en .
+
+ovs:offeredBy a owl:ObjectProperty ;
+    rdfs:domain ovs:Capability ;
+    rdfs:label "offered by"@en , "angeboten von"@de , "proposé par"@fr ;
+    rdfs:comment "Who offers an app: a schema:Organization. Named, never assumed."@en .
+
+# -- what a workspace holds about capabilities (A-Box, ADR-0018) ------------------
+
+ovs:Realisation a owl:Class ;
+    rdfs:label "realisation"@en , "Umsetzung"@de , "réalisation"@fr ;
+    rdfs:comment "As-is: in this deployment, this capability realises this step, on this evidence from a discovery run."@en .
+
+ovs:Availability a owl:Class ;
+    rdfs:label "availability"@en , "Verfügbarkeit"@de , "disponibilité"@fr ;
+    rdfs:comment "What this deployment has or can get. Never the same statement as a realisation: available is not used."@en .
+
+ovs:Allocation a owl:Class ;
+    rdfs:label "allocation"@en , "Zuordnung"@de , "affectation"@fr ;
+    rdfs:comment "To-be: which side implements this step, with which capabilities. An allocation to both sides is a decision a person made."@en .
+
+ovs:step a owl:ObjectProperty ;
+    rdfs:range skos:Concept ;
+    rdfs:label "step"@en , "Schritt"@de , "étape"@fr .
+
+ovs:capability a owl:ObjectProperty ;
+    rdfs:label "capability"@en , "Fähigkeit"@de , "capacité"@fr ;
+    rdfs:comment "Which capability, by its IRI in a capability ontology."@en .
+
+ovs:evidence a owl:ObjectProperty ;
+    rdfs:domain ovs:Realisation ;
+    rdfs:label "evidence"@en , "Beleg"@de , "preuve"@fr ;
+    rdfs:comment "What shows the capability is in use: a finding of a discovery run, by IRI."@en .
+
+ovs:AvailabilityKind a owl:Class ;
+    rdfs:label "kind of availability"@en , "Art der Verfügbarkeit"@de , "type de disponibilité"@fr .
+ovs:Included a ovs:AvailabilityKind ; rdfs:label "included"@en , "enthalten"@de , "inclus"@fr .
+ovs:Installed a ovs:AvailabilityKind ; rdfs:label "installed"@en , "installiert"@de , "installé"@fr .
+ovs:Licensable a ovs:AvailabilityKind ; rdfs:label "licensable"@en , "lizenzierbar"@de , "sous licence possible"@fr .
+ovs:Candidate a ovs:AvailabilityKind ; rdfs:label "candidate"@en , "Kandidat"@de , "candidat"@fr ;
+    rdfs:comment "Proposed, not held: a third-party app someone named for this deployment."@en .
+
+ovs:availableAs a owl:ObjectProperty ;
+    rdfs:domain ovs:Availability ;
+    rdfs:range ovs:AvailabilityKind ;
+    rdfs:label "available as"@en , "verfügbar als"@de , "disponible en tant que"@fr .
+
+ovs:Side a owl:Class ;
+    rdfs:label "side"@en , "Seite"@de , "côté"@fr .
+ovs:Source a ovs:Side ; rdfs:label "source"@en , "Quelle"@de , "source"@fr .
+ovs:Target a ovs:Side ; rdfs:label "target"@en , "Ziel"@de , "cible"@fr .
+ovs:Both a ovs:Side ; rdfs:label "both"@en , "beide"@de , "les deux"@fr ;
+    rdfs:comment "Both platforms take part: an overlap, resolved by a decision."@en .
+
+ovs:side a owl:ObjectProperty ;
+    rdfs:domain ovs:Allocation ;
+    rdfs:range ovs:Side ;
+    rdfs:label "side"@en , "Seite"@de , "côté"@fr .
+
+ovs:decision a owl:ObjectProperty ;
+    rdfs:domain ovs:Allocation ;
+    rdfs:label "decision"@en , "Entscheidung"@de , "décision"@fr ;
+    rdfs:comment "The Decision row that resolved an overlap, as urn:ovs:decision:<id>. Required for ovs:Both; usual for Source or Target too, when giving the step to one side was itself the resolution."@en .
+
+ovs:chosenOption a owl:DatatypeProperty ;
+    rdfs:domain ovs:Allocation ;
+    rdfs:label "chosen option"@en , "gewählte Option"@de , "option choisie"@fr .
+
+ovs:ProcessAllocation a owl:Class ;
+    rdfs:label "process allocation"@en , "Prozesszuordnung"@de , "affectation du processus"@fr ;
+    rdfs:comment "The to-be graph's own node: which scheme it allocates. Map is offered once every top-level step of that scheme has an allocation (shapes/ovs-map-ready.ttl)."@en .
+
+ovs:forScheme a owl:ObjectProperty ;
+    rdfs:domain ovs:ProcessAllocation ;
+    rdfs:range skos:ConceptScheme ;
+    rdfs:label "for scheme"@en , "für Schema"@de , "pour le schéma"@fr .
+
+# ============================================================
+# Mappings (ADR-0018, Map) — for a step allocated to the target, which term
+# of the source carries over to which term of the target, and how.
+#
+# A mapping is a node of its own, NOT a skos:*Match between the two system
+# terms: ADR-0015 forbids matching system terms to each other directly, since
+# a match licenses inferences across systems. A mapping states an intent for
+# one workspace's migration, with its transform. Its predicate takes the
+# values of the cloud's MappingAxiom.predicate, so an admin can later publish
+# it as a row without translating it.
+# ============================================================
+
+ovs:Mapping a owl:Class ;
+    rdfs:label "mapping"@en , "Abbildung"@de , "correspondance"@fr ;
+    rdfs:comment "In this workspace, values of the subject term (source) are carried to the object term (target), for one step. Map's outcome; A-Box, never in a repository."@en .
+
+ovs:subjectTerm a owl:ObjectProperty ;
+    rdfs:domain ovs:Mapping ;
+    rdfs:label "subject term"@en , "Ausgangsbegriff"@de , "terme sujet"@fr ;
+    rdfs:comment "The source system's term (L2 or L3) the values come from. No rdfs:range, for the reason given at ovs:implementedBy."@en .
+
+ovs:objectTerm a owl:ObjectProperty ;
+    rdfs:domain ovs:Mapping ;
+    rdfs:label "object term"@en , "Zielbegriff"@de , "terme objet"@fr ;
+    rdfs:comment "The target system's term the values go to."@en .
+
+ovs:mappingPredicate a owl:DatatypeProperty ;
+    rdfs:domain ovs:Mapping ;
+    rdfs:label "mapping predicate"@en , "Abbildungsart"@de , "prédicat de correspondance"@fr ;
+    rdfs:comment "One of the cloud's MappingAxiom predicates: propertyMapping, subClassOf, equivalentClass, sameAs, disjointWith."@en .
+
+ovs:transform a owl:DatatypeProperty ;
+    rdfs:domain ovs:Mapping ;
+    rdfs:label "transform"@en , "Umwandlung"@de , "transformation"@fr ;
+    rdfs:comment "The NAME of a pure function applied to values crossing the mapping (packages/core). Absent means identity."@en .
+
+ovs:valueMap a owl:DatatypeProperty ;
+    rdfs:domain ovs:Mapping ;
+    rdfs:label "value map"@en , "Wertzuordnung"@de , "table de valeurs"@fr ;
+    rdfs:comment "Literal substitutions as a JSON object, e.g. {\"draft\":\"DRAFT\"}."@en .
+
+ovs:perLocale a owl:DatatypeProperty ;
+    rdfs:domain ovs:Mapping ;
+    rdfs:label "per locale"@en , "je Sprache"@de , "par langue"@fr ;
+    rdfs:comment "True when the values are translations: they cross once per locale."@en .
+
+# -- which way a mapping flows (0.4.0) ------------------------------------------
+#
+# The subject is always the source system's term and the object the target's,
+# so a mapping reads the same both ways; what differs is where a value is
+# written. On a step both systems run, orders are captured in Shopify and
+# booked in Odoo, so that value flows back. Absent, a mapping flows from the
+# source to the target, as every mapping before 0.4.0 does.
+
+ovs:Direction a owl:Class ;
+    rdfs:label "direction"@en , "Richtung"@de , "sens"@fr .
+ovs:SourceToTarget a ovs:Direction ; rdfs:label "source to target"@en , "Quelle zum Ziel"@de , "de la source à la cible"@fr .
+ovs:TargetToSource a ovs:Direction ; rdfs:label "target to source"@en , "Ziel zur Quelle"@de , "de la cible à la source"@fr .
+ovs:BothWays a ovs:Direction ; rdfs:label "both ways"@en , "in beide Richtungen"@de , "dans les deux sens"@fr ;
+    rdfs:comment "Kept in step both ways: a sync rule decides which side wins a conflict."@en .
+
+ovs:direction a owl:ObjectProperty ;
+    rdfs:domain ovs:Mapping ;
+    rdfs:range ovs:Direction ;
+    rdfs:label "direction"@en , "Richtung"@de , "sens"@fr ;
+    rdfs:comment "Where the value is written. Absent: source to target."@en .
+
+# -- 0.5.0: documents travelling the process (ADR-0021) -------------------------
+#
+# A step works on documents (`ovs:processStep` in the process layer says which
+# Schema.org classes serve which step). A document does not stay where it is
+# made: an order leads to a delivery and an invoice, an order captured in the
+# target is booked in the source. These terms say how documents travel, so a
+# map can draw them as lines with travellers on them and a migration can see
+# which crossings it must carry.
+#
+# The documents themselves stay Schema.org's (`schema:Order`, `schema:Invoice`):
+# nothing here defines one. A handover, an exception and a journey are
+# statements ABOUT them, curated in the process layer; a carrier is a fact
+# about one workspace, kept in its A-Box.
+
+ovs:Handover a owl:Class ;
+    rdfs:label "handover"@en , "Übergabe"@de , "passage"@fr ;
+    rdfs:comment "At a step, one document leads to another: an order to a delivery, an order to an invoice. The document that arrives refers back to the one it came from (Schema.org's own `referencesOrder`, `partOfOrder` where they exist)."@en .
+
+ovs:fromDocument a owl:ObjectProperty ;
+    rdfs:domain ovs:Handover ;
+    rdfs:range rdfs:Class ;
+    rdfs:label "from document"@en , "von Dokument"@de , "du document"@fr .
+
+ovs:toDocument a owl:ObjectProperty ;
+    rdfs:domain ovs:Handover ;
+    rdfs:range rdfs:Class ;
+    rdfs:label "to document"@en , "zu Dokument"@de , "vers le document"@fr .
+
+ovs:atStep a owl:ObjectProperty ;
+    rdfs:range skos:Concept ;
+    rdfs:label "at step"@en , "bei Schritt"@de , "à l'étape"@fr ;
+    rdfs:comment "The step where a handover, an exception or a crossing happens."@en .
+
+ovs:Journey a owl:Class ;
+    rdfs:label "journey"@en , "Reise"@de , "parcours"@fr ;
+    rdfs:comment "A ride through the process from one document to another, along the handovers between them: from an offer to an invoice is the happy path of B2C. Its route is the chain of handovers, not a list kept beside it."@en .
+
+ovs:startsWith a owl:ObjectProperty ;
+    rdfs:domain ovs:Journey ;
+    rdfs:range rdfs:Class ;
+    rdfs:label "starts with"@en , "beginnt mit"@de , "commence par"@fr .
+
+ovs:endsWith a owl:ObjectProperty ;
+    rdfs:domain ovs:Journey ;
+    rdfs:range rdfs:Class ;
+    rdfs:label "ends with"@en , "endet mit"@de , "se termine par"@fr .
+
+ovs:Exception a owl:Class ;
+    rdfs:label "exception"@en , "Ausnahme"@de , "exception"@fr ;
+    rdfs:comment "A known way a document leaves the happy path at a step: a payment fails, an order is cancelled, goods are backordered or returned. The process layer keeps the usual ones; a workspace may accept more."@en .
+
+ovs:exceptionAt a owl:ObjectProperty ;
+    rdfs:domain ovs:Exception ;
+    rdfs:range skos:Concept ;
+    rdfs:label "happens at"@en , "tritt auf bei"@de , "survient à"@fr .
+
+ovs:exceptionOf a owl:ObjectProperty ;
+    rdfs:domain ovs:Exception ;
+    rdfs:range rdfs:Class ;
+    rdfs:label "befalls"@en , "betrifft"@de , "concerne"@fr ;
+    rdfs:comment "The document the exception befalls."@en .
+
+ovs:Outcome a owl:Class ;
+    rdfs:label "outcome"@en , "Ausgang"@de , "issue"@fr .
+ovs:Ends a ovs:Outcome ; rdfs:label "ends there"@en , "endet dort"@de , "s'arrête là"@fr .
+ovs:Rejoins a ovs:Outcome ; rdfs:label "rejoins"@en , "kehrt zurück"@de , "rejoint"@fr ;
+    rdfs:comment "Comes back onto the happy path, at `ovs:rejoinsAt`."@en .
+ovs:LeadsTo a ovs:Outcome ; rdfs:label "leads to another document"@en , "führt zu einem anderen Dokument"@de , "mène à un autre document"@fr ;
+    rdfs:comment "Goes on as another document, `ovs:leadsTo`: a return, a credit note."@en .
+
+ovs:outcome a owl:ObjectProperty ;
+    rdfs:domain ovs:Exception ;
+    rdfs:range ovs:Outcome ;
+    rdfs:label "outcome"@en , "Ausgang"@de , "issue"@fr .
+
+ovs:rejoinsAt a owl:ObjectProperty ;
+    rdfs:domain ovs:Exception ;
+    rdfs:range skos:Concept ;
+    rdfs:label "rejoins at"@en , "kehrt zurück bei"@de , "rejoint à"@fr .
+
+ovs:leadsTo a owl:ObjectProperty ;
+    rdfs:domain ovs:Exception ;
+    rdfs:range rdfs:Class ;
+    rdfs:label "leads to"@en , "führt zu"@de , "mène à"@fr .
+
+ovs:Severity a owl:Class ;
+    rdfs:label "severity"@en , "Schwere"@de , "gravité"@fr ;
+    rdfs:comment "How a map marks where an exception ends: a buffer stops, smoke warns, fire says get off."@en .
+ovs:Buffer a ovs:Severity ; rdfs:label "stops"@en , "hält"@de , "s'arrête"@fr .
+ovs:Smoke a ovs:Severity ; rdfs:label "watch out"@en , "Achtung"@de , "attention"@fr .
+ovs:Fire a ovs:Severity ; rdfs:label "get off"@en , "aussteigen"@de , "descendre"@fr .
+
+ovs:severity a owl:ObjectProperty ;
+    rdfs:domain ovs:Exception ;
+    rdfs:range ovs:Severity ;
+    rdfs:label "severity"@en , "Schwere"@de , "gravité"@fr .
+
+ovs:Carrier a owl:Class ;
+    rdfs:label "carrier"@en , "Transportmittel"@de , "transporteur"@fr ;
+    rdfs:comment "How a document is moved across a crossing between systems: the train. Inside one platform the platform's own flow moves it; between platforms something must, and a crossing with no carrier recorded is a gap: an integration to buy or build."@en .
+
+ovs:CarrierKind a owl:Class ;
+    rdfs:label "kind of carrier"@en , "Art des Transports"@de , "type de transporteur"@fr .
+ovs:PlatformFlow a ovs:CarrierKind ;
+    rdfs:label "the platform's own flow"@en , "der eigene Ablauf der Plattform"@de , "le flux propre de la plateforme"@fr .
+ovs:Connector a ovs:CarrierKind ;
+    rdfs:label "a connector app"@en , "eine Connector-App"@de , "une application connecteur"@fr .
+ovs:Sync a ovs:CarrierKind ;
+    rdfs:label "a sync or webhook"@en , "ein Abgleich oder Webhook"@de , "une synchronisation ou un webhook"@fr .
+ovs:MigrationRun a ovs:CarrierKind ;
+    rdfs:label "the migration, once"@en , "die Migration, einmalig"@de , "la migration, une fois"@fr ;
+    rdfs:comment "Moves what exists at cut-over and nothing after: right for a catalogue, not for orders still coming in."@en .
+
+ovs:carrierKind a owl:ObjectProperty ;
+    rdfs:domain ovs:Carrier ;
+    rdfs:range ovs:CarrierKind ;
+    rdfs:label "kind"@en , "Art"@de , "type"@fr .
+
+ovs:carries a owl:ObjectProperty ;
+    rdfs:domain ovs:Carrier ;
+    rdfs:range rdfs:Class ;
+    rdfs:label "carries"@en , "befördert"@de , "transporte"@fr ;
+    rdfs:comment "The document the carrier moves across the crossing at `ovs:atStep`."@en .
+
+# -- the unit of work (ADR-0020) ---------------------------------------------
+# A story is what a person wants the platforms to do, along steps of the
+# process; its scenarios are the ways it is tried. ArchiMate: a Requirement,
+# realised by Work Packages. Stories may come from a person on the site or be
+# handed over from a chat (ADR-0025); a person accepts one, never a machine.
+
+ovs:Story a owl:Class ;
+    rdfs:label "story"@en , "Story"@de , "récit"@fr ;
+    rdfs:comment "A user story: as whom, what, and why, along steps of the process, within a scope of records, locales and markets, with the criteria a person accepts it by. An ArchiMate Requirement."@en .
+
+ovs:Scenario a owl:Class ;
+    rdfs:label "scenario"@en , "Szenario"@de , "scénario"@fr ;
+    rdfs:comment "One way a story is tried: a trip along its steps with given records. An ArchiMate Work Package variant."@en .
+
+ovs:alongStep a owl:ObjectProperty ;
+    rdfs:domain ovs:Story ;
+    rdfs:range skos:Concept ;
+    rdfs:label "along step"@en , "entlang Schritt"@de , "le long de l'étape"@fr ;
+    rdfs:comment "A step of the process (L1) the story goes along."@en .
+
+ovs:scenarioOf a owl:ObjectProperty ;
+    rdfs:domain ovs:Scenario ;
+    rdfs:range ovs:Story ;
+    rdfs:label "scenario of"@en , "Szenario von"@de , "scénario de"@fr .
+
+ovs:acceptanceCriterion a owl:DatatypeProperty ;
+    rdfs:domain ovs:Story ;
+    rdfs:range rdfs:Literal ;
+    rdfs:label "acceptance criterion"@en , "Abnahmekriterium"@de , "critère d'acceptation"@fr .
+
+# -- the twin's state of the platforms (ADR-0033) -----------------------------
+# The ontology is the digital twin. `ovs commit` on the edge reads what is
+# real -- which theme is live and which branch of which repository it is built
+# from, and the systems' settings -- and records it here as a dated state, tied
+# to the loop it was taken in. Everyone else reads the twin, never the systems.
+
+ovs:TwinState a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "twin state"@en , "Zwillingszustand"@de , "état du jumeau"@fr ;
+    rdfs:comment "What the platforms were at one moment, as the edge read them: dcterms:created says when; its parts are the themes and settings it holds."@en .
+
+ovs:inLoop a owl:DatatypeProperty ;
+    rdfs:domain ovs:TwinState ;
+    rdfs:label "in loop"@en , "im Loop"@de , "dans la boucle"@fr ;
+    rdfs:comment "The loop (its number) the state was taken in, when one was open."@en .
+
+ovs:partOfState a owl:ObjectProperty ;
+    rdfs:range ovs:TwinState ;
+    rdfs:label "part of state"@en , "Teil des Zustands"@de , "partie de l'état"@fr .
+
+ovs:Theme a owl:Class ;
+    rdfs:label "theme"@en , "Theme"@de , "thème"@fr ;
+    rdfs:comment "A storefront theme as the shop holds it, with the branch of the repository it is built from."@en .
+
+ovs:themeRole a owl:DatatypeProperty ;
+    rdfs:domain ovs:Theme ;
+    rdfs:label "role"@en , "Rolle"@de , "rôle"@fr ;
+    rdfs:comment "As the shop says it: MAIN is the published theme; UNPUBLISHED, DEVELOPMENT and others are not."@en .
+
+ovs:repository a owl:DatatypeProperty ;
+    rdfs:label "repository"@en , "Repository"@de , "dépôt"@fr ;
+    rdfs:comment "The address of the repository a theme is built from."@en .
+
+ovs:branch a owl:DatatypeProperty ;
+    rdfs:label "branch"@en , "Branch"@de , "branche"@fr .
+
+ovs:commit a owl:DatatypeProperty ;
+    rdfs:label "commit"@en , "Commit"@de , "commit"@fr ;
+    rdfs:comment "The last commit on the branch, as `<sha> <subject>`."@en .
+
+ovs:waitingToRelease a owl:DatatypeProperty ;
+    rdfs:label "waiting to release"@en , "wartet auf Freigabe"@de , "en attente de livraison"@fr ;
+    rdfs:comment "How many commits the stage branch has that the live branch does not."@en .
+
+ovs:Setting a owl:Class ;
+    rdfs:label "setting"@en , "Einstellung"@de , "paramètre"@fr ;
+    rdfs:comment "One setting of one system, as read: a key and its value."@en .
+
+ovs:settingOf a owl:ObjectProperty ;
+    rdfs:domain ovs:Setting ;
+    rdfs:range ovs:System ;
+    rdfs:label "setting of"@en , "Einstellung von"@de , "paramètre de"@fr .
+
+ovs:settingKey a owl:DatatypeProperty ;
+    rdfs:domain ovs:Setting ;
+    rdfs:label "key"@en , "Schlüssel"@de , "clé"@fr .
+
+ovs:settingValue a owl:DatatypeProperty ;
+    rdfs:domain ovs:Setting ;
+    rdfs:label "value"@en , "Wert"@de , "valeur"@fr .
+
+# -- the design decisions (ADR-0034) -----------------------------------------
+# How the platforms are built, and why, is part of the twin: a person or an AI
+# shaping the next loop reads these first, and follows them. A request that
+# goes against one is raised, not silently done. A decision is changed by a
+# newer one that supersedes it, never by editing it away.
+
+ovs:DesignDecision a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "design decision"@en , "Designentscheidung"@de , "décision de conception"@fr ;
+    rdfs:comment "One rule the platforms are built by: dcterms:title says what, ovs:because why, dcterms:creator who and dcterms:date when."@en .
+
+ovs:because a owl:DatatypeProperty ;
+    rdfs:domain ovs:DesignDecision ;
+    rdfs:label "because"@en , "weil"@de , "parce que"@fr .
+
+ovs:appliesTo a owl:ObjectProperty ;
+    rdfs:domain ovs:DesignDecision ;
+    rdfs:label "applies to"@en , "gilt für"@de , "s'applique à"@fr ;
+    rdfs:comment "What the decision is about: a system, a process step, a term of a system, or a structure of the workspace."@en .
+
+ovs:supersedes a owl:ObjectProperty ;
+    rdfs:domain ovs:DesignDecision ;
+    rdfs:range ovs:DesignDecision ;
+    rdfs:label "supersedes"@en , "ersetzt"@de , "remplace"@fr ;
+    rdfs:comment "The earlier decision this one replaces. The earlier one stays, so the history is kept."@en .
