@@ -32,13 +32,13 @@
 
 <http://ovs.dlab5.net/ontology/process>
     a owl:Ontology , ovs:ProcessOntology ;
-    owl:versionIRI <http://ovs.dlab5.net/ontology/process/0.1.0> ;
-    owl:versionInfo "0.1.0" ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/process/0.2.0> ;
+    owl:versionInfo "0.2.0" ;
     owl:imports <http://ovs.dlab5.net/ontology/core> ;
     rdfs:label "OntoVibeShift process layer"@en ,
                "OntoVibeShift-Prozessebene"@de ,
                "Couche de processus d'OntoVibeShift"@fr ;
-    dcterms:description "Business processes as SKOS concept schemes, and which Schema.org concepts serve each step."@en .
+    dcterms:description "Business processes as SKOS concept schemes, which Schema.org concepts serve each step, and (0.2.0) how documents travel through B2C: handovers, the happy path and the usual exceptions."@en .
 
 # -- B2C order-to-cash ---------------------------------------------------------
 
@@ -123,3 +123,82 @@ schema:Organization   ovs:processStep proc:AfterSale .
 # of measure is not, and that is an ERP's business.
 gr:UnitPriceSpecification ovs:processStep proc:Price .
 gr:QuantitativeValue      ovs:processStep proc:Avail .
+
+# -- 0.2.0: how documents travel through B2C (ADR-0021) ------------------------
+#
+# Two more documents serve a step: a payment (Settle) and a return (AfterSale).
+
+schema:PayAction      ovs:processStep proc:Settle .
+schema:ReturnAction   ovs:processStep proc:AfterSale .
+
+# The handovers: at a step, one document leads to another. Grounded in
+# Schema.org's own references where it has one (an Invoice `referencesOrder`,
+# a ParcelDelivery is `partOfOrder`); where it has none, the comment says why.
+
+proc:OfferToOrder a ovs:Handover ;
+    ovs:fromDocument schema:Offer ; ovs:toDocument schema:Order ; ovs:atStep proc:Capture ;
+    rdfs:label "the cart becomes an order"@en , "der Warenkorb wird zur Bestellung"@de , "le panier devient une commande"@fr ;
+    rdfs:comment "An Order's `acceptedOffer` names the offers it was made of."@en .
+
+proc:OrderToPayment a ovs:Handover ;
+    ovs:fromDocument schema:Order ; ovs:toDocument schema:PayAction ; ovs:atStep proc:Settle ;
+    rdfs:label "the order is paid"@en , "die Bestellung wird bezahlt"@de , "la commande est payée"@fr ;
+    rdfs:comment "Schema.org has no reference from a PayAction to an order; the payment's `object` is the order, by convention."@en .
+
+proc:OrderToInvoice a ovs:Handover ;
+    ovs:fromDocument schema:Order ; ovs:toDocument schema:Invoice ; ovs:atStep proc:Settle ;
+    rdfs:label "the order is invoiced"@en , "die Bestellung wird fakturiert"@de , "la commande est facturée"@fr ;
+    rdfs:comment "An Invoice `referencesOrder`."@en .
+
+proc:OrderToDelivery a ovs:Handover ;
+    ovs:fromDocument schema:Order ; ovs:toDocument schema:ParcelDelivery ; ovs:atStep proc:Fulfil ;
+    rdfs:label "the order is delivered"@en , "die Bestellung wird geliefert"@de , "la commande est livrée"@fr ;
+    rdfs:comment "A ParcelDelivery is `partOfOrder`."@en .
+
+proc:DeliveryToReturn a ovs:Handover ;
+    ovs:fromDocument schema:ParcelDelivery ; ovs:toDocument schema:ReturnAction ; ovs:atStep proc:AfterSale ;
+    rdfs:label "goods come back"@en , "Ware kommt zurück"@de , "la marchandise revient"@fr .
+
+proc:ReturnToCreditNote a ovs:Handover ;
+    ovs:fromDocument schema:ReturnAction ; ovs:toDocument schema:Invoice ; ovs:atStep proc:AfterSale ;
+    rdfs:label "the return is refunded"@en , "die Rücksendung wird erstattet"@de , "le retour est remboursé"@fr ;
+    rdfs:comment "A credit note is an Invoice with a negative total; Odoo keeps both in account.move."@en .
+
+# The happy path: from the offer a shopper sees to the invoice.
+
+proc:OrderToCash a ovs:Journey ;
+    ovs:startsWith schema:Offer ; ovs:endsWith schema:Invoice ;
+    rdfs:label "order to invoice"@en , "Bestellung bis Rechnung"@de , "de la commande à la facture"@fr ;
+    rdfs:comment "The happy path of B2C: the cart becomes an order, the order is delivered, paid and invoiced."@en .
+
+# The usual exceptions. A workspace may accept more (the edge proposes them).
+
+proc:PaymentFailed a ovs:Exception ;
+    ovs:exceptionAt proc:Settle ; ovs:exceptionOf schema:PayAction ;
+    ovs:outcome ovs:Rejoins ; ovs:rejoinsAt proc:Settle ; ovs:severity ovs:Smoke ;
+    rdfs:label "payment failed"@en , "Zahlung fehlgeschlagen"@de , "paiement échoué"@fr ;
+    skos:definition "The payment is declined or times out; the shopper may try again, or the order waits and is cancelled."@en .
+
+proc:Cancelled a ovs:Exception ;
+    ovs:exceptionAt proc:Capture ; ovs:exceptionOf schema:Order ;
+    ovs:outcome ovs:Ends ; ovs:severity ovs:Buffer ;
+    rdfs:label "cancelled"@en , "storniert"@de , "annulée"@fr ;
+    skos:definition "The order is cancelled before it is delivered; what was paid is refunded."@en .
+
+proc:Backorder a ovs:Exception ;
+    ovs:exceptionAt proc:Avail ; ovs:exceptionOf schema:Order ;
+    ovs:outcome ovs:Rejoins ; ovs:rejoinsAt proc:Fulfil ; ovs:severity ovs:Smoke ;
+    rdfs:label "backordered"@en , "nachbestellt"@de , "en rupture"@fr ;
+    skos:definition "Not in stock when ordered: the order waits for goods, then is delivered."@en .
+
+proc:PartialDelivery a ovs:Exception ;
+    ovs:exceptionAt proc:Fulfil ; ovs:exceptionOf schema:ParcelDelivery ;
+    ovs:outcome ovs:Rejoins ; ovs:rejoinsAt proc:Fulfil ; ovs:severity ovs:Smoke ;
+    rdfs:label "partly delivered"@en , "teilweise geliefert"@de , "livrée en partie"@fr ;
+    skos:definition "The order goes out in more than one parcel; each is a delivery of its own."@en .
+
+proc:ReturnAndRefund a ovs:Exception ;
+    ovs:exceptionAt proc:AfterSale ; ovs:exceptionOf schema:ParcelDelivery ;
+    ovs:outcome ovs:LeadsTo ; ovs:leadsTo schema:ReturnAction ; ovs:severity ovs:Buffer ;
+    rdfs:label "returned and refunded"@en , "zurückgesandt und erstattet"@de , "retournée et remboursée"@fr ;
+    skos:definition "Goods come back and the shopper is refunded: a return, then a credit note."@en .

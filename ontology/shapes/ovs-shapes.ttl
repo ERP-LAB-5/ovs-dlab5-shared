@@ -95,3 +95,206 @@ ovssh:ProcessStepCitationShape a sh:NodeShape ;
         sh:node ovssh:InAScheme ;
         sh:message "A cited process step must be a concept in a declared scheme. Validate together with tbox/ovs-concepts.ttl."@en ;
     ] .
+
+# ============================================================
+# Capabilities in a workspace (ADR-0018): as-is, availability, to-be.
+# Checked on every change, so these say what a single statement must be,
+# not whether the work is finished: that is shapes/ovs-map-ready.ttl.
+# ============================================================
+
+ovssh:RealisationShape a sh:NodeShape ;
+    sh:targetClass ovs:Realisation ;
+    sh:property [
+        sh:path ovs:step ; sh:minCount 1 ; sh:maxCount 1 ; sh:node ovssh:InAScheme ;
+        sh:message "A realisation names exactly one step, from a declared scheme."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:capability ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A realisation names exactly one capability, by its IRI in a capability ontology."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:evidence ; sh:minCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A realisation says what shows the capability is in use: a finding of a discovery run. Without evidence it is a guess."@en ;
+    ] .
+
+ovssh:AvailabilityShape a sh:NodeShape ;
+    sh:targetClass ovs:Availability ;
+    sh:property [
+        sh:path ovs:capability ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "An availability names exactly one capability."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:availableAs ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:in ( ovs:Included ovs:Installed ovs:Licensable ovs:Candidate ) ;
+        sh:message "An availability says how the capability is available: included, installed, licensable or a candidate."@en ;
+    ] .
+
+ovssh:AllocationShape a sh:NodeShape ;
+    sh:targetClass ovs:Allocation ;
+    sh:property [
+        sh:path ovs:step ; sh:minCount 1 ; sh:maxCount 1 ; sh:node ovssh:InAScheme ;
+        sh:message "An allocation names exactly one step, from a declared scheme."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:side ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( ovs:Source ovs:Target ovs:Both ) ;
+        sh:message "An allocation names exactly one side: ovs:Source, ovs:Target or ovs:Both."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:capability ; sh:minCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "An allocation names the capabilities that will implement the step."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:decision ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "An allocation cites at most one decision, by IRI (urn:ovs:decision:<id>)."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:chosenOption ; sh:maxCount 1 ;
+        sh:message "An allocation records at most one chosen option."@en ;
+    ] .
+
+# Both => a decision. Written as the implication it is: "not Both, or decided".
+# Source and Target MAY cite a decision too, and usually do: the commonest way
+# to resolve an overlap is to give the step to one side.
+ovssh:OverlapIsDecidedShape a sh:NodeShape ;
+    sh:targetClass ovs:Allocation ;
+    sh:or (
+        [ sh:not [ sh:property [ sh:path ovs:side ; sh:hasValue ovs:Both ] ] ]
+        [ sh:property [ sh:path ovs:decision ; sh:minCount 1 ] ;
+          sh:property [ sh:path ovs:chosenOption ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "An allocation to both sides is an overlap, resolved by a person: it names the decision (ovs:decision) and the option chosen (ovs:chosenOption)."@en .
+
+# A decision and its option go together, on any side: half a record is neither.
+ovssh:DecisionHasOptionShape a sh:NodeShape ;
+    sh:targetClass ovs:Allocation ;
+    sh:or (
+        [ sh:property [ sh:path ovs:decision ; sh:minCount 1 ] ;
+          sh:property [ sh:path ovs:chosenOption ; sh:minCount 1 ] ]
+        [ sh:property [ sh:path ovs:decision ; sh:maxCount 0 ] ;
+          sh:property [ sh:path ovs:chosenOption ; sh:maxCount 0 ] ]
+    ) ;
+    sh:message "A decision and the option chosen are recorded together (ovs:decision with ovs:chosenOption), whichever side the step went to."@en .
+
+# -- a mapping (ADR-0018, Map) ------------------------------------------------------
+
+ovssh:MappingShape a sh:NodeShape ;
+    sh:targetClass ovs:Mapping ;
+    sh:property [
+        sh:path ovs:step ; sh:minCount 1 ; sh:maxCount 1 ; sh:node ovssh:InAScheme ;
+        sh:message "A mapping is made for exactly one step, from a declared scheme."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:subjectTerm ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A mapping names exactly one source term, by its IRI."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:objectTerm ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A mapping names exactly one target term, by its IRI."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:mappingPredicate ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:in ( "propertyMapping" "subClassOf" "equivalentClass" "sameAs" "disjointWith" ) ;
+        sh:message "A mapping's predicate is one of the cloud's MappingAxiom predicates: propertyMapping, subClassOf, equivalentClass, sameAs, disjointWith."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:transform ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^[A-Za-z][A-Za-z0-9]*$" ;
+        sh:message "A transform is the name of one function, not an expression."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:valueMap ; sh:maxCount 1 ; sh:datatype xsd:string ;
+        sh:message "A mapping has at most one value map, as a JSON string."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:perLocale ; sh:maxCount 1 ; sh:datatype xsd:boolean ;
+        sh:message "Per locale is true or false, once."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:direction ; sh:maxCount 1 ; sh:in ( ovs:SourceToTarget ovs:TargetToSource ovs:BothWays ) ;
+        sh:message "A mapping flows one way: ovs:SourceToTarget (the default), ovs:TargetToSource or ovs:BothWays."@en ;
+    ] .
+
+# ============================================================
+# How documents travel (ADR-0021): handovers, journeys, exceptions, carriers.
+# The process layer's catalogue is checked by these too (the TBox must
+# satisfy the A-Box shapes), so a curated handover is held to the same rules
+# as one a workspace adds.
+# ============================================================
+
+ovssh:HandoverShape a sh:NodeShape ;
+    sh:targetClass ovs:Handover ;
+    sh:property [
+        sh:path ovs:fromDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A handover leads from exactly one document."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:toDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A handover leads to exactly one document."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:atStep ; sh:minCount 1 ; sh:maxCount 1 ; sh:node ovssh:InAScheme ;
+        sh:message "A handover happens at exactly one step, from a declared scheme."@en ;
+    ] .
+
+ovssh:JourneyShape a sh:NodeShape ;
+    sh:targetClass ovs:Journey ;
+    sh:property [
+        sh:path ovs:startsWith ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A journey starts with exactly one document."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:endsWith ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A journey ends with exactly one document."@en ;
+    ] .
+
+ovssh:ExceptionShape a sh:NodeShape ;
+    sh:targetClass ovs:Exception ;
+    sh:property [
+        sh:path ovs:exceptionAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:node ovssh:InAScheme ;
+        sh:message "An exception happens at exactly one step, from a declared scheme."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:exceptionOf ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "An exception befalls at most one document."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:outcome ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( ovs:Ends ovs:Rejoins ovs:LeadsTo ) ;
+        sh:message "An exception ends there (ovs:Ends), rejoins the happy path (ovs:Rejoins) or leads to another document (ovs:LeadsTo)."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:severity ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( ovs:Buffer ovs:Smoke ovs:Fire ) ;
+        sh:message "An exception says how a map marks it: ovs:Buffer, ovs:Smoke or ovs:Fire."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:rejoinsAt ; sh:maxCount 1 ; sh:node ovssh:InAScheme ;
+        sh:message "An exception rejoins at most at one step, from a declared scheme."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:leadsTo ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "An exception leads to at most one document."@en ;
+    ] .
+
+# An exception that rejoins says where; one that leads on says to what.
+ovssh:RejoinsSomewhereShape a sh:NodeShape ;
+    sh:targetSubjectsOf ovs:outcome ;
+    sh:or (
+        [ sh:path ovs:outcome ; sh:in ( ovs:Ends ) ]
+        [ sh:and ( [ sh:path ovs:outcome ; sh:in ( ovs:Rejoins ) ] [ sh:path ovs:rejoinsAt ; sh:minCount 1 ] ) ]
+        [ sh:and ( [ sh:path ovs:outcome ; sh:in ( ovs:LeadsTo ) ] [ sh:path ovs:leadsTo ; sh:minCount 1 ] ) ]
+    ) ;
+    sh:message "An exception that rejoins names where (ovs:rejoinsAt); one that leads on names the document (ovs:leadsTo)."@en .
+
+ovssh:CarrierShape a sh:NodeShape ;
+    sh:targetClass ovs:Carrier ;
+    sh:property [
+        sh:path ovs:atStep ; sh:minCount 1 ; sh:maxCount 1 ; sh:node ovssh:InAScheme ;
+        sh:message "A carrier moves a document across the crossing at exactly one step, from a declared scheme."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:carries ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "A carrier carries exactly one document."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:carrierKind ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:in ( ovs:PlatformFlow ovs:Connector ovs:Sync ovs:MigrationRun ) ;
+        sh:message "A carrier is one kind: ovs:PlatformFlow, ovs:Connector, ovs:Sync or ovs:MigrationRun. No carrier at all is the gap, not a kind."@en ;
+    ] .
