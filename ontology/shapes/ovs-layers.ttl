@@ -269,3 +269,94 @@ ovssh:AppCapabilityShape a sh:NodeShape ;
         [ sh:property [ sh:path ovs:offeredBy ; sh:minCount 1 ] ]
     ) ;
     sh:message "An app names who offers it (ovs:offeredBy). A third-party capability is named, never assumed."@en .
+
+# ============================================================
+# 1.0.0 (ADR-0037): external annotations, constraints, business ontologies
+# ============================================================
+
+# -- an external ontology is annotated at a pinned release, never copied ------
+
+ovssh:ExternalAnnotationShape a sh:NodeShape ;
+    sh:targetClass ovs:ExternalAnnotation ;
+    sh:property [
+        sh:path owl:versionIRI ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "An annotation of an external ontology carries exactly one owl:versionIRI: OVS's annotations change too."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:annotates ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "An annotation document names the one external ontology it is about, with ovs:annotates."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:pinnedRelease ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+        sh:message "An annotation document pins the external ontology's release it is written against: an unpinned standard moves under the twin unseen."@en ;
+    ] ;
+    sh:property [
+        sh:path owl:imports ; sh:maxCount 0 ;
+        sh:message "An annotation document does not import the external ontology: it is used at its release, never copied in."@en ;
+    ] .
+
+# -- a constraint ontology is one system at one version -----------------------
+
+ovssh:ConstraintOntologyShape a sh:NodeShape ;
+    sh:targetClass ovs:ConstraintOntology ;
+    sh:property [
+        sh:path owl:versionIRI ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A constraint ontology is one system at one version: it carries exactly one owl:versionIRI."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:constraintsOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ovs:System ;
+        sh:message "A constraint ontology says which system it is about, with ovs:constraintsOf."@en ;
+    ] ;
+    sh:property [
+        sh:path owl:imports ;
+        sh:qualifiedValueShape ovssh:PublishedSystemVersion ;
+        sh:qualifiedMinCount 1 ; sh:qualifiedMaxCount 1 ;
+        sh:message "A constraint ontology imports exactly one system ontology VERSION: the limits are that version's."@en ;
+    ] .
+
+ovssh:ConstraintShape a sh:NodeShape ;
+    sh:targetClass ovs:Constraint ;
+    sh:property [
+        sh:path ovs:constrains ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ovs:SystemTerm ;
+        sh:message "A constraint is on exactly one system term, with ovs:constrains."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:limitKey ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype <http://www.w3.org/2001/XMLSchema#string> ;
+        sh:message "A constraint has the one key the code reads it by."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:limitValue ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A constraint has exactly one value."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:limitUnit ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A constraint says its unit: byte, pixel, count, ratio."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:learnedFrom ; sh:minCount 1 ; sh:class ovs:LearnedHow ;
+        sh:message "A constraint says how it was learned: from the documentation, or from discovery."@en ;
+    ] .
+
+ovssh:KnownIssueShape a sh:NodeShape ;
+    sh:targetClass ovs:KnownIssue ;
+    sh:property [
+        sh:path ovs:affects ; sh:minCount 1 ; sh:class ovs:SystemTerm ;
+        sh:message "A known issue names the system term it affects."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:workaround ; sh:minCount 1 ;
+        sh:message "A known issue says how a plan works around it."@en ;
+    ] ;
+    sh:property [
+        sh:path ovs:learnedFrom ; sh:minCount 1 ; sh:class ovs:LearnedHow ;
+        sh:message "A known issue says how it was learned."@en ;
+    ] .
+
+# -- a business ontology is versioned, and stands on schema.org ---------------
+
+ovssh:BusinessOntologyShape a sh:NodeShape ;
+    sh:targetClass ovs:BusinessOntology ;
+    sh:property [
+        sh:path owl:versionIRI ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A business ontology carries exactly one owl:versionIRI: it grows loop by loop, and a twin names the version it was written against."@en ;
+    ] .

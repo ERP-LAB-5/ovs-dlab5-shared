@@ -21,8 +21,12 @@
     "files": [
       "tbox/ovs.ttl",
       "tbox/ovs-concepts.ttl",
+      "tbox/ovs-loop.ttl",
+      "tbox/ovs-rosetta.ttl",
+      "tbox/ovs-twin.ttl",
       "shapes/ovs-shapes.ttl",
-      "shapes/ovs-layers.ttl"
+      "shapes/ovs-layers.ttl",
+      "shapes/ovs-twin.ttl"
     ]
   },
   "own_domain": "",

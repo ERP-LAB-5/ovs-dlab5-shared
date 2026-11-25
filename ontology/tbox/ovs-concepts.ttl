@@ -32,8 +32,8 @@
 
 <http://ovs.dlab5.net/ontology/process>
     a owl:Ontology , ovs:ProcessOntology ;
-    owl:versionIRI <http://ovs.dlab5.net/ontology/process/0.2.0> ;
-    owl:versionInfo "0.2.0" ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/process/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
     owl:imports <http://ovs.dlab5.net/ontology/core> ;
     rdfs:label "OntoVibeShift process layer"@en ,
                "OntoVibeShift-Prozessebene"@de ,

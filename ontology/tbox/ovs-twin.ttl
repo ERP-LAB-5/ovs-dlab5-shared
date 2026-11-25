@@ -1,0 +1,119 @@
+@prefix ovs:     <http://ovs.dlab5.net/core#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# L1 — the digital twin itself (ADR-0037).
+#
+# The ontology is the digital twin. An organization's twin is its A-Box, in
+# its vault, in parts:
+#
+#   manifest      which vocabularies, at which versions, the twin is written
+#                 against (this file defines it)
+#   twin          the systems as deployed: dated states (ovs:TwinState, core)
+#   stones and    the agreed business objects, as implemented (Rosetta)
+#   instances
+#   gaps          what was found missing, and what was accepted
+#   decisions     how the systems are built, and why (ovs:DesignDecision, core)
+#   practices     how the organization works with them
+#
+# It need not be complete. It must be consistent: every term it uses is
+# declared in a vocabulary its manifest names (shapes/ovs-twin.ttl, check.py).
+# A twin release is the whole twin, frozen when a loop ships: the contract
+# between Build and Operations.
+# ============================================================
+
+<http://ovs.dlab5.net/ontology/twin> a owl:Ontology ;
+    owl:versionIRI <http://ovs.dlab5.net/ontology/twin/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    owl:imports <http://ovs.dlab5.net/ontology/core> ;
+    rdfs:label "OntoVibeShift digital twin"@en ,
+               "Digitaler Zwilling von OntoVibeShift"@de ,
+               "Jumeau numérique d'OntoVibeShift"@fr .
+
+# -- the manifest ----------------------------------------------------------------
+
+ovs:TwinManifest a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "twin manifest"@en , "Manifest des Zwillings"@de , "manifeste du jumeau"@fr ;
+    rdfs:comment "The twin's header: the vocabularies, each at its version, the twin is written against. One per twin; rewritten by each twin commit."@en .
+
+ovs:usesVocabulary a owl:ObjectProperty ;
+    rdfs:domain ovs:TwinManifest ;
+    rdfs:label "uses vocabulary"@en , "verwendet Vokabular"@de , "utilise le vocabulaire"@fr ;
+    rdfs:comment "A vocabulary the twin uses, named by its owl:versionIRI: public (schema.org's annotations, OVS core, a system version) or the organization's own (its business vocabulary, its customizations)."@en .
+
+# -- gaps ----------------------------------------------------------------------
+
+ovs:Gap a owl:Class ;
+    rdfs:label "gap"@en , "Lücke"@de , "écart"@fr ;
+    rdfs:comment "Something the business needs that a system, as deployed, does not do or does not hold. Raised, never patched (D-01). Found by a loop as an issue or finding; kept in the twin so it is not found again."@en .
+
+ovs:GapStatus a owl:Class ;
+    rdfs:label "gap status"@en , "Status der Lücke"@de , "statut de l'écart"@fr .
+ovs:Identified a ovs:GapStatus ;
+    rdfs:label "identified"@en , "erkannt"@de , "identifié"@fr ;
+    rdfs:comment "Known, not yet settled."@en .
+ovs:Acknowledged a ovs:GapStatus ;
+    rdfs:label "acknowledged"@en , "anerkannt"@de , "reconnu"@fr ;
+    rdfs:comment "Known and accepted: the systems are built around it, by a decision or for a stated reason."@en .
+
+ovs:gapStatus a owl:ObjectProperty ;
+    rdfs:domain ovs:Gap ;
+    rdfs:range ovs:GapStatus ;
+    rdfs:label "status"@en , "Status"@de , "statut"@fr .
+
+ovs:gapIn a owl:ObjectProperty ;
+    rdfs:domain ovs:Gap ;
+    rdfs:range ovs:System ;
+    rdfs:label "in"@en , "in"@de , "dans"@fr .
+
+ovs:reportCode a owl:DatatypeProperty ;
+    rdfs:label "report code"@en , "Meldungscode"@de , "code du signalement"@fr ;
+    rdfs:comment "The loop report it was raised as: L2-R14."@en .
+
+ovs:settledBy a owl:ObjectProperty ;
+    rdfs:domain ovs:Gap ;
+    rdfs:range ovs:DesignDecision ;
+    rdfs:label "settled by"@en , "geregelt durch"@de , "réglé par"@fr .
+
+ovs:acceptedBecause a owl:DatatypeProperty ;
+    rdfs:domain ovs:Gap ;
+    rdfs:label "accepted because"@en , "akzeptiert, weil"@de , "accepté parce que"@fr .
+
+# -- working practices ---------------------------------------------------------
+
+ovs:WorkingPractice a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "working practice"@en , "Arbeitsweise"@de , "pratique de travail"@fr ;
+    rdfs:comment "How the organization works with its systems, agreed in a loop: dcterms:title says what, dcterms:description more. Not a design decision (how the systems are built); a habit the systems rely on."@en .
+
+ovs:agreedIn a owl:DatatypeProperty ;
+    rdfs:label "agreed in"@en , "vereinbart in"@de , "convenu dans"@fr ;
+    rdfs:comment "The loop it was agreed in: L2."@en .
+
+# -- releases ------------------------------------------------------------------
+
+ovs:TwinRelease a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "twin release"@en , "Zwillings-Release"@de , "version du jumeau"@fr ;
+    rdfs:comment "The whole twin frozen when a loop ships, numbered, never changed: what should be true. Operations compares what is true against it."@en .
+
+ovs:releaseNumber a owl:DatatypeProperty ;
+    rdfs:domain ovs:TwinRelease ;
+    rdfs:range xsd:integer ;
+    rdfs:label "number"@en , "Nummer"@de , "numéro"@fr .
+
+ovs:releaseOf a owl:ObjectProperty ;
+    rdfs:domain ovs:TwinRelease ;
+    rdfs:range ovs:TwinManifest ;
+    rdfs:label "release of"@en , "Release von"@de , "version de"@fr ;
+    rdfs:comment "The manifest the release was cut with: its vocabularies and versions."@en .
+
+ovs:digest a owl:DatatypeProperty ;
+    rdfs:label "digest"@en , "Prüfsumme"@de , "empreinte"@fr ;
+    rdfs:comment "SHA-256 of the released files, in a fixed order."@en .
